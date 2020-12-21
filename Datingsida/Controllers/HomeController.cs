@@ -12,7 +12,7 @@ namespace Datingsida.Controllers
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
-        //hej
+        
 
         public HomeController(ILogger<HomeController> logger)
         {
