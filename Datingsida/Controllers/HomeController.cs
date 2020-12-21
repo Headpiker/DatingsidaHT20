@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 namespace Datingsida.Controllers
 {
     public class HomeController : Controller
-    {
+    {// hejohå
         private readonly ILogger<HomeController> _logger;
 
         public HomeController(ILogger<HomeController> logger)
