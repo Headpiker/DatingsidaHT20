@@ -159,6 +159,12 @@ namespace Datingsida.Controllers
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var profileModel = await _context.Profiles.FindAsync(id);
+
+            // Ta bort bild from mappen Image.
+            var imagePath = Path.Combine(_hostEnvironment.WebRootPath, "image", profileModel.ImageFilepath);
+            if (System.IO.File.Exists(imagePath))
+                System.IO.File.Delete(imagePath);
+
             _context.Profiles.Remove(profileModel);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
