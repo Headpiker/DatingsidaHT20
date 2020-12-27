@@ -19,6 +19,7 @@ namespace Datingsida.Controllers
         private readonly DatingDbContext _context;
         private readonly IWebHostEnvironment _hostEnvironment;
 
+
         public ProfileController(DatingDbContext context, IWebHostEnvironment hostEnvironment)
         {
             _context = context;

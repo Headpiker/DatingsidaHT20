@@ -1,8 +1,44 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
+﻿
+@model Datingsida.Models.ProfileModel
+@{
+    ViewBag.Title = "Home Page";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+
+
+<div class="jumbotron">
+    <div class="container">
+        <h1 class="display-4">
+            Designed for better  <span style="font-size:100%;color:red;">&#8734;</span> matches
+        </h1> <p class=" =lead">Match and chat with<span style="font-size:300%;color:red;">&hearts;</span>new people! </p>
+
+    </div>
 </div>
+
+<h4> Discover Some Users</h4>
+
+<center>
+
+    <div class="card bl4l-big-radius bl4l-fg-element" style="width: 235px; z-index: 1">
+
+        <img class="card-img-top bl4l-big-radius" width="200" height="300" src="@Url.Action( "Profile")" />
+
+        @if (!User.Identity.IsAuthenticated)
+        {
+
+            <a asp-area="Identity" asp-page="/Account/Register">Sign up to view profiles</a>
+            <a asp-area="Identity" asp-page="/Account/Login">Login to view profiles</a>
+        }
+        else
+        {
+            @Html.ActionLink(linkText: "Visit Profile", actionName: "Index", controllerName: "Profile", routeValues: new { }, htmlAttributes: new { @class = "btn btn-light" })
+
+
+        }
+
+    </div>
+
+</center>
+
+
+

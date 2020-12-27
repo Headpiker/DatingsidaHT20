@@ -12,7 +12,9 @@ namespace Datingsida.Models
     
 
     public class ProfileModel
+
     {
+
         [Key]
         public int Id { get; set; }
         [Required]
