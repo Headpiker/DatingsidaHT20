@@ -9,7 +9,7 @@
 <p>
     <a asp-action="Create">Create New</a>
 </p>
-<table class="table">
+@*<table class="table">
     <thead>
         <tr>
             <th>
@@ -80,4 +80,36 @@
         </tr>
 }
     </tbody>
-</table>
+</table>*@
+
+<div class="card-deck">
+    @foreach (var profile in Model)
+    { 
+    <div class="card" style="width: 15rem">
+        <img src="@Url.Content("~/image/"+ profile.ImageFilepath)"
+             class="card-img-top"
+             alt="profilbild" />
+        <div class="card-body">
+            <h5 class="card-title">@profile.FirstName @profile.LastName </h5>
+            <p class="card-text">
+                @profile.Presentation
+            </p>
+        </div>
+        <ul class="list-group list-group-flush">
+            <li class="list-group-item">@profile.Age</li>
+            <li class="list-group-item">@profile.Gender</li>
+            <li class="list-group-item">@profile.Sexuality</li>
+        </ul>
+        <div class="card-body">
+            <a asp-action="Edit" asp-route-id="@profile.Id">Edit</a> |
+            <a asp-action="Details" asp-route-id="@profile.Id">Details</a> |
+            <a asp-action="Delete" asp-route-id="@profile.Id">Delete</a>
+            
+        </div>
+        <div class="card-body">
+            <a href="#!" class="btn btn-primary">Button</a>
+            <a href="#!" class="btn btn-primary">Button</a>
+        </div>
+    </div>
+    }
+</div>
