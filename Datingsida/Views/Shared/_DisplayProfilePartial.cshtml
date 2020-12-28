@@ -1,0 +1,42 @@
+﻿@model ProfileModel
+
+@{ 
+    var showListLinks = (bool)ViewData["ShowListLinks"];
+}
+<div class="card" style="width: 15rem">
+    <img src="@Url.Content("~/image/"+ Model.ImageFilepath)"
+         class="card-img-top"
+         alt="profilbild" />
+    <div class="card-body">
+        <h5 class="card-title">@Model.FirstName @Model.LastName </h5>
+        <p class="card-text">
+            @Model.Presentation
+        </p>
+    </div>
+    <ul class="list-group list-group-flush">
+        <li class="list-group-item">@Model.Age</li>
+        <li class="list-group-item">@Model.Gender</li>
+        <li class="list-group-item">@Model.Sexuality</li>
+    </ul>
+    @if (showListLinks)
+    {
+
+        <div class="card-body">
+            <a asp-action="Edit" asp-route-id="@Model.Id">Edit</a> |
+            <a asp-action="Details" asp-route-id="@Model.Id">Details</a> |
+            <a asp-action="Delete" asp-route-id="@Model.Id">Delete</a>
+
+        </div>
+    }
+    <div class="card-body">
+        @if (!User.Identity.IsAuthenticated)
+        {
+            <a asp-area="Identity" asp-page="/Account/Register">Sign up to view profiles</a>
+            <a asp-area="Identity" asp-page="/Account/Login">Login to view profiles</a>
+        }
+        else
+        {
+            @Html.ActionLink(linkText: "Visit Profile", actionName: "Index", controllerName: "Profile", routeValues: new { }, htmlAttributes: new { @class = "btn btn-light" })
+        }
+    </div>
+</div>

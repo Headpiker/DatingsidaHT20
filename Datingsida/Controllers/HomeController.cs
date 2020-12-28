@@ -1,5 +1,7 @@
-﻿using Datingsida.Models;
+﻿using Datingsida.DataAccess;
+using Datingsida.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
@@ -12,15 +14,18 @@ namespace Datingsida.Controllers
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
+        private readonly DatingDbContext _context;
 
-        public HomeController(ILogger<HomeController> logger)
+        public HomeController(DatingDbContext context,ILogger<HomeController> logger)
         {
             _logger = logger;
+            _context = context;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            return View();
+            return View(await _context.Profiles.ToListAsync());
+            
         }
 
         public IActionResult Privacy()

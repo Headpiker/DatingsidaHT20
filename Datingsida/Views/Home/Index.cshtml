@@ -1,8 +1,26 @@
-﻿@{
+﻿@model IEnumerable<Datingsida.Models.ProfileModel>
+@{
     ViewData["Title"] = "Home Page";
+    ViewData["ShowListLinks"] = false;
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<div class="jumbotron">
+        <div class="container">
+            <h1 class="display-4">
+                Designed for better  <span style="font-size:100%;color:red;">&#8734;</span> matches
+            </h1> <p class=" =lead">Match and chat with<span style="font-size:300%;color:red;">&hearts;</span>new people! </p>
+
+        </div>
+    </div>
+<h4> Discover Some Users</h4>
+
+<div class="card-deck">
+
+    @foreach (var profile in Model)
+    {
+        @await Html.PartialAsync("_DisplayProfilePartial", profile);
+
+        @*<partial name="~/Views/Shared/_DisplayProfilePartial" model="profile" view-data="ViewData" />*@
+    }
 </div>
+    
