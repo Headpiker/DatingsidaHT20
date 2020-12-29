@@ -28,15 +28,9 @@
 
         </div>
     }
-    <div class="card-body">
-        @if (!User.Identity.IsAuthenticated)
-        {
-            <a asp-area="Identity" asp-page="/Account/Register">Sign up to view profiles</a>
-            <a asp-area="Identity" asp-page="/Account/Login">Login to view profiles</a>
-        }
-        else
-        {
-            @Html.ActionLink(linkText: "Visit Profile", actionName: "Index", controllerName: "Profile", routeValues: new { }, htmlAttributes: new { @class = "btn btn-light" })
-        }
-    </div>
+<div class="card-body">
+    
+        @Html.ActionLink(linkText: "Visit Profile", actionName: "Index", controllerName: "Profile", routeValues: new { }, htmlAttributes: new { @class = "btn btn-light" })
+    
+</div>
 </div>

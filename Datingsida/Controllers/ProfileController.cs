@@ -5,12 +5,12 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using Datingsida.Data;
 using Datingsida.Models;
-using Microsoft.AspNetCore.Authorization;
 using Datingsida.DataAccess;
 using Microsoft.AspNetCore.Hosting;
 using System.IO;
+using Microsoft.AspNetCore.Identity;
+
 
 namespace Datingsida.Controllers
 {
@@ -18,17 +18,31 @@ namespace Datingsida.Controllers
     {
         private readonly DatingDbContext _context;
         private readonly IWebHostEnvironment _hostEnvironment;
+        private readonly UserManager<IdentityUser> _userManager;
 
-        public ProfileController(DatingDbContext context, IWebHostEnvironment hostEnvironment)
+        public ProfileController(DatingDbContext context, IWebHostEnvironment hostEnvironment, UserManager<IdentityUser> userManager)
         {
             _context = context;
             _hostEnvironment = hostEnvironment;
+            _userManager = userManager;
         }
+        
 
         // GET: Profile
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Profiles.ToListAsync());
+            //hämtar nuvarande användare (all data)
+            var currentUser = await _userManager.GetUserAsync(User);
+            
+
+            if (currentUser != null)
+            {
+                return View(await _context.Profiles.ToListAsync());
+            }
+            else
+            {
+                return NotFound();
+            }
         }
 
         // GET: Profile/Details/5
@@ -50,7 +64,7 @@ namespace Datingsida.Controllers
         }
 
         // GET: Profile/Create
-        [Authorize]
+        
         public IActionResult Create()
         {
             return View();
@@ -61,7 +75,7 @@ namespace Datingsida.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,FirstName,LastName,Age,Gender,Sexuality,ImageFile,Presentation,IsActive")] ProfileModel profileModel)
+        public async Task<IActionResult> Create([Bind("Id,FirstName,LastName,Age,Gender,Sexuality,ImageFile,Presentation")] ProfileModel profileModel)
         {
             if (ModelState.IsValid)
             {
@@ -75,6 +89,10 @@ namespace Datingsida.Controllers
                 {
                     await profileModel.ImageFile.CopyToAsync(fileStream);
                 }
+
+                // hämtar inloggade användares id
+                profileModel.OwnerId = _userManager.GetUserId(User);
+                profileModel.IsActive = true;
 
                 //Lägger till det vi sparat
                 _context.Add(profileModel);

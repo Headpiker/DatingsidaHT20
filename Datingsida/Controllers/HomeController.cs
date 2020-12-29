@@ -1,5 +1,6 @@
 ﻿using Datingsida.DataAccess;
 using Datingsida.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
@@ -21,7 +22,7 @@ namespace Datingsida.Controllers
             _logger = logger;
             _context = context;
         }
-
+        [AllowAnonymous]
         public async Task<IActionResult> Index()
         {
             return View(await _context.Profiles.ToListAsync());

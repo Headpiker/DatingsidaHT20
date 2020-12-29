@@ -5,22 +5,23 @@
 }
 
 <div class="jumbotron">
-        <div class="container">
-            <h1 class="display-4">
-                Designed for better  <span style="font-size:100%;color:red;">&#8734;</span> matches
-            </h1> <p class=" =lead">Match and chat with<span style="font-size:300%;color:red;">&hearts;</span>new people! </p>
+    <div class="container">
+        <h1 class="display-4">
+            Designed for better  <span style="font-size:100%;color:red;">&#8734;</span> matches
+        </h1> <p class=" =lead">Match and chat with<span style="font-size:300%;color:red;">&hearts;</span>new people! </p>
 
-        </div>
     </div>
+</div>
 <h4> Discover Some Users</h4>
 
 <div class="card-deck">
-
-    @foreach (var profile in Model)
+    @{
+        var r = new Random();
+        
+        var threeRandomUser = Model.OrderBy(u => r.Next()).Take(3);
+    }
+    @foreach (var profile in threeRandomUser)
     {
         @await Html.PartialAsync("_DisplayProfilePartial", profile);
-
-        @*<partial name="~/Views/Shared/_DisplayProfilePartial" model="profile" view-data="ViewData" />*@
     }
 </div>
-    

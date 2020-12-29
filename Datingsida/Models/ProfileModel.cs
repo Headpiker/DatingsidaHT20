@@ -6,6 +6,7 @@ using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Http;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel;
+using Microsoft.AspNetCore.Identity;
 
 namespace Datingsida.Models
 {
@@ -15,6 +16,9 @@ namespace Datingsida.Models
     {
         [Key]
         public int Id { get; set; }
+        //Id från AspNetUser
+        [ForeignKey("OwnerId")]
+        public string OwnerId { get; set; }
         [Required]
         public string FirstName { get; set; }
         [Required]
@@ -33,9 +37,10 @@ namespace Datingsida.Models
         public string Presentation { get; set; }
         public bool IsActive { get; set; }
 
+
         public ProfileModel()
         {
         }
-
+        
     }
 }
