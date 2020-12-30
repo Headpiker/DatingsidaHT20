@@ -88,27 +88,19 @@ namespace Datingsida.Controllers
         // GET: Profile/Search
         public async Task<IActionResult> Search()
         {
-
+            ViewBag.showVisitLink = ViewData["ShowVisitLink"] = true;
+            ViewBag.showLinks = ViewData["ShowLinks"] = false;
             return View(await _context.Profiles.ToListAsync());
         }
-
-        // GET: Profile/Details/5
-        public async Task<IActionResult> Details(int? id)
+        // POST: Profile/SearchResults
+        public async Task<IActionResult> SearchResults(String SearchTerm)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var profileModel = await _context.Profiles
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (profileModel == null)
-            {
-                return NotFound();
-            }
-
-            return View(profileModel);
+            ViewBag.showVisitLink = ViewData["ShowVisitLink"] = true;
+            ViewBag.showLinks = ViewData["ShowLinks"] = false;
+            return View("Search",await _context.Profiles.Where(profile => profile.FirstName.Contains(SearchTerm) ||
+                                                                          profile.LastName.Contains(SearchTerm)).ToListAsync());
         }
+      
 
         // GET: Profile/Create
         
@@ -181,6 +173,19 @@ namespace Datingsida.Controllers
             {
                 try
                 {
+                    string wwwPath = _hostEnvironment.WebRootPath;
+                    string file = Path.GetFileNameWithoutExtension(profileModel.ImageFile.FileName);
+                    string extension = Path.GetExtension(profileModel.ImageFile.FileName);
+                    profileModel.ImageFilepath = file = file + DateTime.Now.ToString("yymmddss") + extension;
+                    string path = Path.Combine(wwwPath + "/Image/", file);
+                    using (var fileStream = new FileStream(path, FileMode.Create))
+                    {
+                        await profileModel.ImageFile.CopyToAsync(fileStream);
+                    }
+
+                    profileModel.OwnerId = _userManager.GetUserId(User);
+                    profileModel.IsActive = true;
+
                     _context.Update(profileModel);
                     await _context.SaveChangesAsync();
                 }
