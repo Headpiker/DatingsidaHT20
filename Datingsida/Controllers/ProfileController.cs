@@ -31,18 +31,65 @@ namespace Datingsida.Controllers
         // GET: Profile
         public async Task<IActionResult> Index()
         {
-            //hämtar nuvarande användare (all data)
-            var currentUser = await _userManager.GetUserAsync(User);
             
+            //hämtar nuvarande användare (all data från Identity)
+            var currentUser = await _userManager.GetUserAsync(User);
 
             if (currentUser != null)
             {
-                return View(await _context.Profiles.ToListAsync());
+                ViewBag.showVisitLink = ViewData["ShowVisitLink"] = false;
+                ViewBag.showLinks = ViewData["ShowLinks"] = true; 
+                List<ProfileModel> allProfiles = await _context.Profiles.ToListAsync();
+                foreach (ProfileModel profile in allProfiles) 
+                { 
+                    if(currentUser.Id == profile.OwnerId)
+                    {
+                        List<ProfileModel> lst = new List<ProfileModel>();
+                        lst.Add(profile);
+                        IEnumerable<ProfileModel> enumerableprofile = lst;
+
+                        return View(enumerableprofile);
+                    }
+                }
+                
+                return RedirectToAction("Create","Profile");
+                
             }
             else
             {
                 return NotFound();
             }
+        }
+
+        // GET: Profile/Visit
+        public async Task<IActionResult> Visit(int? id)
+        {
+
+             if (id != null)
+            {
+                ViewBag.showVisitLink = ViewData["ShowVisitLink"] = false;
+                ViewBag.showLinks = ViewData["ShowLinks"] = false;
+                var profileModel = await _context.Profiles
+                .FirstOrDefaultAsync(m => m.Id == id);
+                if (profileModel == null)
+                {
+                    return NotFound();
+                }
+                List<ProfileModel> list = new List<ProfileModel>();
+                list.Add(profileModel);
+                IEnumerable<ProfileModel> enumerableprofile = list;
+                return View(enumerableprofile);
+            }
+            else
+            {
+                return NotFound();
+            }
+        }
+        // GET: Profile/Search
+        public async Task<IActionResult> Search()
+        {
+
+            return View(await _context.Profiles.ToListAsync());
         }
 
         // GET: Profile/Details/5
