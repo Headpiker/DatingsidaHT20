@@ -1,0 +1,41 @@
+﻿@model ProfileModel
+
+@{ 
+    var showListLinks = (bool)ViewData["ShowLinks"];
+    var showVisitLink = (bool)ViewData["ShowVisitLink"];
+  }
+
+<div class="card" style="max-width: 20rem">
+    <img src="@Url.Content("~/image/"+ Model.ImageFilepath)"
+         class="card-img-top"
+         alt="profilbild" />
+    <div class="card-body">
+        <h5 class="card-title">@Model.FirstName @Model.LastName </h5>
+        <p class="card-text">
+            @Model.Presentation
+        </p>
+    </div>
+    <ul class="list-group list-group-flush">
+        <li class="list-group-item">@Model.Age</li>
+        <li class="list-group-item">@Model.Gender</li>
+        <li class="list-group-item">@Model.Sexuality</li>
+    </ul>
+    @if (showListLinks)
+    {
+
+        <div class="card-body">
+            <a asp-action="Edit" asp-route-id="@Model.Id">Edit</a> |
+            <a asp-action="Delete" asp-route-id="@Model.Id">Delete</a>
+
+        </div>
+    }
+    @if (showVisitLink)
+    {
+        <div class="card-body">
+
+            @Html.ActionLink(linkText: "Visit Profile", actionName: "Visit", controllerName: "Profile", routeValues: new { id = Model.Id }, htmlAttributes: new { @class = "btn btn-light" })
+
+
+        </div>
+    }
+</div>

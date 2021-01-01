@@ -13,6 +13,6 @@ namespace Datingsida.Data
             : base(options)
         {
         }
-        public DbSet<Datingsida.Models.ProfileModel> ProfileModel { get; set; }
+        
     }
 }

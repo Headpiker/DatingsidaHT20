@@ -5,47 +5,105 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using Datingsida.Data;
 using Datingsida.Models;
-using Microsoft.AspNetCore.Authorization;
+using Datingsida.DataAccess;
+using Microsoft.AspNetCore.Hosting;
+using System.IO;
+using Microsoft.AspNetCore.Identity;
+
 
 namespace Datingsida.Controllers
 {
     public class ProfileController : Controller
     {
-        private readonly ApplicationDbContext _context;
+        private readonly DatingDbContext _context;
+        private readonly IWebHostEnvironment _hostEnvironment;
+        private readonly UserManager<IdentityUser> _userManager;
 
-        public ProfileController(ApplicationDbContext context)
+        public ProfileController(DatingDbContext context, IWebHostEnvironment hostEnvironment, UserManager<IdentityUser> userManager)
         {
             _context = context;
+            _hostEnvironment = hostEnvironment;
+            _userManager = userManager;
         }
+        
 
         // GET: Profile
         public async Task<IActionResult> Index()
         {
-            return View(await _context.ProfileModel.ToListAsync());
+            
+            //hämtar nuvarande användare (all data från Identity)
+            var currentUser = await _userManager.GetUserAsync(User);
+
+            if (currentUser != null)
+            {
+                ViewBag.showVisitLink = ViewData["ShowVisitLink"] = false;
+                ViewBag.showLinks = ViewData["ShowLinks"] = true; 
+                List<ProfileModel> allProfiles = await _context.Profiles.ToListAsync();
+                foreach (ProfileModel profile in allProfiles) 
+                { 
+                    if(currentUser.Id == profile.OwnerId)
+                    {
+                        List<ProfileModel> lst = new List<ProfileModel>();
+                        lst.Add(profile);
+                        IEnumerable<ProfileModel> enumerableprofile = lst;
+
+                        return View(enumerableprofile);
+                    }
+                }
+                
+                return RedirectToAction("Create","Profile");
+                
+            }
+            else
+            {
+                return NotFound();
+            }
         }
 
-        // GET: Profile/Details/5
-        public async Task<IActionResult> Details(int? id)
+        // GET: Profile/Visit
+        public async Task<IActionResult> Visit(int? id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
 
-            var profileModel = await _context.ProfileModel
+             if (id != null)
+            {
+                ViewBag.showVisitLink = ViewData["ShowVisitLink"] = false;
+                ViewBag.showLinks = ViewData["ShowLinks"] = false;
+                var profileModel = await _context.Profiles
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (profileModel == null)
+                if (profileModel == null)
+                {
+                    return NotFound();
+                }
+                List<ProfileModel> list = new List<ProfileModel>();
+                list.Add(profileModel);
+                IEnumerable<ProfileModel> enumerableprofile = list;
+                return View(enumerableprofile);
+            }
+            else
             {
                 return NotFound();
             }
-
-            return View(profileModel);
         }
+        // GET: Profile/Search
+        public async Task<IActionResult> Search()
+        {
+            ViewBag.showVisitLink = ViewData["ShowVisitLink"] = true;
+            ViewBag.showLinks = ViewData["ShowLinks"] = false;
+            return View(await _context.Profiles.ToListAsync());
+        }
+        // POST: Profile/SearchResults
+        public async Task<IActionResult> SearchResults(String SearchTerm)
+        {
+            ViewBag.showVisitLink = ViewData["ShowVisitLink"] = true;
+            ViewBag.showLinks = ViewData["ShowLinks"] = false;
+            return View("Search",await _context.Profiles.Where(profile => profile.FirstName.Contains(SearchTerm) ||
+                                                                          profile.LastName.Contains(SearchTerm)).ToListAsync());
+        }
+      
 
         // GET: Profile/Create
-        [Authorize]
+        
         public IActionResult Create()
         {
             return View();
@@ -56,10 +114,26 @@ namespace Datingsida.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,FirstName,LastName,Age,Gender,Sexuality,ImageFilepath,Presentation,IsActive")] ProfileModel profileModel)
+        public async Task<IActionResult> Create([Bind("Id,FirstName,LastName,Age,Gender,Sexuality,ImageFile,Presentation")] ProfileModel profileModel)
         {
             if (ModelState.IsValid)
             {
+                //Vi sparar vår bild till foldern Image i wwwroot
+                string wwwPath = _hostEnvironment.WebRootPath;
+                string file = Path.GetFileNameWithoutExtension(profileModel.ImageFile.FileName);
+                string extension = Path.GetExtension(profileModel.ImageFile.FileName);
+                profileModel.ImageFilepath = file = file + DateTime.Now.ToString("yymmddss") + extension;
+                string path = Path.Combine(wwwPath + "/Image/", file);
+                using (var fileStream = new FileStream(path,FileMode.Create))
+                {
+                    await profileModel.ImageFile.CopyToAsync(fileStream);
+                }
+
+                // hämtar inloggade användares id
+                profileModel.OwnerId = _userManager.GetUserId(User);
+                profileModel.IsActive = true;
+
+                //Lägger till det vi sparat
                 _context.Add(profileModel);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
@@ -75,7 +149,7 @@ namespace Datingsida.Controllers
                 return NotFound();
             }
 
-            var profileModel = await _context.ProfileModel.FindAsync(id);
+            var profileModel = await _context.Profiles.FindAsync(id);
             if (profileModel == null)
             {
                 return NotFound();
@@ -99,6 +173,19 @@ namespace Datingsida.Controllers
             {
                 try
                 {
+                    string wwwPath = _hostEnvironment.WebRootPath;
+                    string file = Path.GetFileNameWithoutExtension(profileModel.ImageFile.FileName);
+                    string extension = Path.GetExtension(profileModel.ImageFile.FileName);
+                    profileModel.ImageFilepath = file = file + DateTime.Now.ToString("yymmddss") + extension;
+                    string path = Path.Combine(wwwPath + "/Image/", file);
+                    using (var fileStream = new FileStream(path, FileMode.Create))
+                    {
+                        await profileModel.ImageFile.CopyToAsync(fileStream);
+                    }
+
+                    profileModel.OwnerId = _userManager.GetUserId(User);
+                    profileModel.IsActive = true;
+
                     _context.Update(profileModel);
                     await _context.SaveChangesAsync();
                 }
@@ -126,7 +213,7 @@ namespace Datingsida.Controllers
                 return NotFound();
             }
 
-            var profileModel = await _context.ProfileModel
+            var profileModel = await _context.Profiles
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (profileModel == null)
             {
@@ -141,15 +228,21 @@ namespace Datingsida.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var profileModel = await _context.ProfileModel.FindAsync(id);
-            _context.ProfileModel.Remove(profileModel);
+            var profileModel = await _context.Profiles.FindAsync(id);
+
+            // Ta bort bild from mappen Image.
+            var imagePath = Path.Combine(_hostEnvironment.WebRootPath, "image", profileModel.ImageFilepath);
+            if (System.IO.File.Exists(imagePath))
+                System.IO.File.Delete(imagePath);
+
+            _context.Profiles.Remove(profileModel);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
         private bool ProfileModelExists(int id)
         {
-            return _context.ProfileModel.Any(e => e.Id == id);
+            return _context.Profiles.Any(e => e.Id == id);
         }
     }
 }

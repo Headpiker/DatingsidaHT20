@@ -1,15 +1,15 @@
 ﻿@model IEnumerable<Datingsida.Models.ProfileModel>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Visit";
 }
 
-<h1>Profil</h1>
+<h1>Visit</h1>
 
 
 <div class="card-deck">
     @foreach (var profile in Model)
-    { 
+    {
         <partial name="_DisplayProfilePartial" model="profile" view-data="ViewData" />
     }
 </div>

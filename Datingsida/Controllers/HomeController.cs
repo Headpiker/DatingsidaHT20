@@ -1,6 +1,8 @@
-﻿using Datingsida.Models;
+﻿using Datingsida.DataAccess;
+using Datingsida.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
@@ -14,23 +16,18 @@ namespace Datingsida.Controllers
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
-        ApplicationDbContext context;
-        public HomeController(ILogger<HomeController> logger)
+        private readonly DatingDbContext _context;
+
+        public HomeController(DatingDbContext context,ILogger<HomeController> logger)
         {
             _logger = logger;
+            _context = context;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            var userID = User.Identity.GetType().ToString();
-            var selectProfiles = context.ProfileModel.Where(x => x.Id.ToString() != userID).OrderBy(x => Guid.NewGuid()).ToList();
-            var viewProfiles = new ViewAllProfilesModel
-            {
-                ProfileModels = selectProfiles,
-            };
-            viewProfiles.ProfileModels.RemoveAll(x => x.IsActive == false);
+            return View(await _context.Profiles.ToListAsync());
             
-            return View(viewProfiles);
         }
 
         public IActionResult Privacy()

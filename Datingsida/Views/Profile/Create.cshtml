@@ -10,7 +10,7 @@
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="Create">
+        <form asp-action="Create" enctype="multipart/form-data">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
                 <label asp-for="FirstName" class="control-label"></label>
@@ -28,32 +28,47 @@
                 <span asp-validation-for="Age" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Gender" class="control-label"></label>
-                <input asp-for="Gender" class="form-control" />
-                <span asp-validation-for="Gender" class="text-danger"></span>
+                @Html.LabelFor(model => model.Gender, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+
+                    @Html.RadioButtonFor(model => model.Gender, "Male")
+                    @Html.Label("Male")
+                    <br />
+                    @Html.RadioButtonFor(model => model.Gender, "Female")
+                    @Html.Label("Female")
+                    <br />
+                    @Html.RadioButtonFor(model => model.Gender, "Non-binary")
+                    @Html.Label("Non-binary")
+                    <br />
+                    @Html.ValidationMessageFor(model => model.Gender, "", new { @class = "text-danger" })
+                </div>
             </div>
             <div class="form-group">
-                <label asp-for="Sexuality" class="control-label"></label>
-                <input asp-for="Sexuality" class="form-control" />
-                <span asp-validation-for="Sexuality" class="text-danger"></span>
+                @Html.LabelFor(model => model.Sexuality, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.RadioButtonFor(model => model.Sexuality, "Heterosexual")
+                    @Html.Label("Heterosexual")
+                    <br />
+                    @Html.RadioButtonFor(model => model.Sexuality, "Homosexual")
+                    @Html.Label("Homosexual")
+                    <br />
+                    @Html.RadioButtonFor(model => model.Sexuality, "Bisexual")
+                    @Html.Label("Bisexual")
+                    @Html.ValidationMessageFor(model => model.Sexuality, "", new { @class = "text-danger" })
+                </div>
             </div>
             <div class="form-group">
-                <label asp-for="ImageFilepath" class="control-label"></label>
-                <input asp-for="ImageFilepath" class="form-control" />
-                <span asp-validation-for="ImageFilepath" class="text-danger"></span>
+                <label asp-for="ImageFile" class="control-label"></label>
+                <input asp-for="ImageFile" accept="image/*" />
+                <span asp-validation-for="ImageFile" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="Presentation" class="control-label"></label>
                 <input asp-for="Presentation" class="form-control" />
                 <span asp-validation-for="Presentation" class="text-danger"></span>
             </div>
-            <div class="form-group form-check">
-                <label class="form-check-label">
-                    <input class="form-check-input" asp-for="IsActive" /> @Html.DisplayNameFor(model => model.IsActive)
-                </label>
-            </div>
             <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
+                <input type="submit" value="Skapa" class="btn btn-primary" />
             </div>
         </form>
     </div>
