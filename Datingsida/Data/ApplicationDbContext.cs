@@ -13,6 +13,7 @@ namespace Datingsida.Data
             : base(options)
         {
         }
+        public DbSet<Datingsida.Models.FriendRequestModel> FriendRequestModel { get; set; }
         
     }
 }

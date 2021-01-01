@@ -14,11 +14,12 @@ namespace Datingsida.Models
 
         [ForeignKey ("Profile")]
         public string ProfileID { get; set; }
-        public ProfileModel Profile { get; set; }
+        public ProfileModel Id { get; set; }
 
         [ForeignKey ("Requested")]
         public string RequestID { get; set; }
         public ProfileModel Request { get; set; }
 
+        public List<ProfileModel> Profiles { get; set; }
     }
 }
