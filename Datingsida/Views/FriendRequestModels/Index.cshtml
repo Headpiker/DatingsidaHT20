@@ -4,38 +4,17 @@
     ViewData["Title"] = "Index";
 }
 
-<h1>Index</h1>
+<h2>Vänförfrågningar</h2>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.ProfileID)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.RequestID)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.ProfileID)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.RequestID)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.FriendRequestID">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.FriendRequestID">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.FriendRequestID">Delete</a>
-            </td>
-        </tr>
-}
-    </tbody>
-</table>
+<div id="list">
+
+    @foreach (var profil in Model)
+    {
+        <div id="object">
+
+            <div class="object-item">
+                <img src="@Url.Content(profil.Profiles)" />
+            </div>
+        </div>
+    }
+</div>

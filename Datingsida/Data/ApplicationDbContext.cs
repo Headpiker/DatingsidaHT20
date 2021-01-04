@@ -9,11 +9,11 @@ namespace Datingsida.Data
 {
     public class ApplicationDbContext : IdentityDbContext
     {
-        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
-            : base(options)
-        {
-        }
-        public DbSet<Datingsida.Models.FriendRequestModel> FriendRequestModel { get; set; }
+        //public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
+        //    : base(options)
+        //{
+        //}
+        public DbSet<FriendRequestModel> FriendRequestModel { get; set; }
         
     }
 }
