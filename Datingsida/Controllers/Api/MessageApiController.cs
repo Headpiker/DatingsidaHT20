@@ -25,14 +25,14 @@ namespace Datingsida.Controllers.Api
         [HttpGet]
         public async Task<ActionResult<IEnumerable<MessageModel>>> GetMessageModel()
         {
-            return await _context.MessageModel.ToListAsync();
+            return await _context.Messages.ToListAsync();
         }
 
         // GET: api/MessageApi/5
         [HttpGet("{id}")]
         public async Task<ActionResult<MessageModel>> GetMessageModel(int id)
         {
-            var messageModel = await _context.MessageModel.FindAsync(id);
+            var messageModel = await _context.Messages.FindAsync(id);
 
             if (messageModel == null)
             {
@@ -78,7 +78,7 @@ namespace Datingsida.Controllers.Api
         [HttpPost]
         public async Task<ActionResult<MessageModel>> PostMessageModel(MessageModel messageModel)
         {
-            _context.MessageModel.Add(messageModel);
+            _context.Messages.Add(messageModel);
             await _context.SaveChangesAsync();
 
             return CreatedAtAction("GetMessageModel", new { id = messageModel.MessageId }, messageModel);
@@ -88,13 +88,13 @@ namespace Datingsida.Controllers.Api
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteMessageModel(int id)
         {
-            var messageModel = await _context.MessageModel.FindAsync(id);
+            var messageModel = await _context.Messages.FindAsync(id);
             if (messageModel == null)
             {
                 return NotFound();
             }
 
-            _context.MessageModel.Remove(messageModel);
+            _context.Messages.Remove(messageModel);
             await _context.SaveChangesAsync();
 
             return NoContent();
@@ -102,7 +102,7 @@ namespace Datingsida.Controllers.Api
 
         private bool MessageModelExists(int id)
         {
-            return _context.MessageModel.Any(e => e.MessageId == id);
+            return _context.Messages.Any(e => e.MessageId == id);
         }
     }
 }

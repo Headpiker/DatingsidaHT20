@@ -14,5 +14,6 @@ namespace Datingsida.DataAccess
         }
 
         public DbSet<ProfileModel> Profiles { get; set; }
+        public DbSet<MessageModel> Messages { get; set; }
     }
 }
