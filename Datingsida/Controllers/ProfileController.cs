@@ -122,7 +122,7 @@ namespace Datingsida.Controllers
                 string wwwPath = _hostEnvironment.WebRootPath;
                 string file = Path.GetFileNameWithoutExtension(profileModel.ImageFile.FileName);
                 string extension = Path.GetExtension(profileModel.ImageFile.FileName);
-                profileModel.ImageFilepath = file = file + DateTime.Now.ToString("yymmddss") + extension;
+                profileModel.ImageFilepath = file = file + DateTime.Now.ToString("yyMMddss") + extension;
                 string path = Path.Combine(wwwPath + "/Image/", file);
                 using (var fileStream = new FileStream(path,FileMode.Create))
                 {
@@ -150,10 +150,14 @@ namespace Datingsida.Controllers
             }
 
             var profileModel = await _context.Profiles.FindAsync(id);
+
             if (profileModel == null)
             {
                 return NotFound();
             }
+            //Vi sparar namnet på bilden och använder den i Edit POST
+            var imageFilepath = profileModel.ImageFilepath;
+            TempData["imageFilepath"] = imageFilepath;
             return View(profileModel);
         }
 
@@ -162,7 +166,7 @@ namespace Datingsida.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,FirstName,LastName,Age,Gender,Sexuality,ImageFile,Presentation")] ProfileModel profileModel)
+        public async Task<IActionResult> Edit(int id,[Bind("Id,FirstName,LastName,Age,Gender,Sexuality,ImageFile,Presentation")] ProfileModel profileModel)
         {
             if (id != profileModel.Id)
             {
@@ -176,13 +180,22 @@ namespace Datingsida.Controllers
                     string wwwPath = _hostEnvironment.WebRootPath;
                     string file = Path.GetFileNameWithoutExtension(profileModel.ImageFile.FileName);
                     string extension = Path.GetExtension(profileModel.ImageFile.FileName);
-                    profileModel.ImageFilepath = file = file + DateTime.Now.ToString("yymmddss") + extension;
-                    string path = Path.Combine(wwwPath + "/Image/", file);
-                    using (var fileStream = new FileStream(path, FileMode.Create))
-                    {
-                        await profileModel.ImageFile.CopyToAsync(fileStream);
-                    }
+                    profileModel.ImageFilepath = file = file + DateTime.Now.ToString("yyMMddss") + extension;
+                    string newPath = Path.Combine(wwwPath+"/Image/", file);
 
+                    //Här får vi namnet på den gamla bilden från Edit Get.
+                    string oldImageFilepath = TempData["imageFilepath"].ToString();
+                    string oldPath = Path.Combine(wwwPath + "/Image/", oldImageFilepath);
+
+                    if (!newPath.Equals(oldPath))
+                    {
+                        using (var fileStream = new FileStream(newPath, FileMode.Create))
+                        {
+                            await profileModel.ImageFile.CopyToAsync(fileStream);
+                        }
+
+                        System.IO.File.Delete(oldPath);
+                    }
                     profileModel.OwnerId = _userManager.GetUserId(User);
                     profileModel.IsActive = true;
 
