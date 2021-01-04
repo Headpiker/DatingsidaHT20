@@ -32,6 +32,7 @@ namespace Datingsida.Models
         public string ImageFilepath { get; set; }
         [NotMapped]
         [DisplayName("Ladda upp bild")]
+        [Required]
         public IFormFile ImageFile { get; set; }
         [Required]
         public string Presentation { get; set; }
