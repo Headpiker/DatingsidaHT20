@@ -65,7 +65,7 @@
             </div>
             <div class="form-group">
                 <label asp-for="Presentation" class="control-label"></label>
-                <input asp-for="Presentation" class="form-control" />
+                @Html.TextAreaFor(model => model.Presentation, new { @class = "form-control" })
                 <span asp-validation-for="Presentation" class="text-danger"></span>
             </div>
             <div class="form-group">
