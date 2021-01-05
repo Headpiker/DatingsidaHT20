@@ -4,14 +4,16 @@ using Datingsida.DataAccess;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
-namespace Datingsida.Data.Migrations
+namespace Datingsida.Migrations.DatingDb
 {
     [DbContext(typeof(DatingDbContext))]
-    partial class DatingDbContextModelSnapshot : ModelSnapshot
+    [Migration("20210104154542_meddelanden2")]
+    partial class meddelanden2
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

@@ -1,9 +1,12 @@
 ﻿@model ProfileModel
 
-@{ 
+
+@{
     var showListLinks = (bool)ViewData["ShowLinks"];
     var showVisitLink = (bool)ViewData["ShowVisitLink"];
-  }
+    var showMessageForm = (bool)ViewData["ShowMessageForm"];
+    var showMessage = (bool)ViewData["ShowMessage"];
+}
 
 <div class="card" style="max-width: 20rem">
     <img src="@Url.Content("~/image/"+ Model.ImageFilepath)"
@@ -35,7 +38,32 @@
 
             @Html.ActionLink(linkText: "Visit Profile", actionName: "Visit", controllerName: "Profile", routeValues: new { id = Model.Id }, htmlAttributes: new { @class = "btn btn-light" })
 
-
         </div>
     }
 </div>
+@if (showMessageForm)
+{
+    <div>
+        <form name="messageForm">
+            @Html.AntiForgeryToken()
+            <h5>Lämna ett meddelande</h5>
+
+            <input type="text" id="titel" name="titel" maxlength="30" placeholder="Titel" required>
+            <br />
+            <textarea id="messageText" name="text" maxlength="500" rows="3" cols="23" placeholder="Ditt meddelande" required></textarea>
+            <br />
+            <button type="button" id="sendMessage">Skicka</button>
+        </form>
+    </div>
+}
+@if (showMessage)
+{
+<div>
+    <h5>Dina meddelanden</h5>
+
+    <div id="messages">
+
+    </div>
+</div>
+}
+

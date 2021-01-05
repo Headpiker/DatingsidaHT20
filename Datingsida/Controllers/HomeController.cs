@@ -25,6 +25,7 @@ namespace Datingsida.Controllers
         [AllowAnonymous]
         public async Task<IActionResult> Index()
         {
+
             return View(await _context.Profiles.ToListAsync());
             
         }

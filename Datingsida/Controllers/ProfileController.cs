@@ -38,7 +38,10 @@ namespace Datingsida.Controllers
             if (currentUser != null)
             {
                 ViewBag.showVisitLink = ViewData["ShowVisitLink"] = false;
-                ViewBag.showLinks = ViewData["ShowLinks"] = true; 
+                ViewBag.showLinks = ViewData["ShowLinks"] = true;
+                ViewBag.showMessageForm = ViewData["ShowMessageForm"] = false;
+                ViewBag.showMessage = ViewData["ShowMessage"] = true;
+
                 List<ProfileModel> allProfiles = await _context.Profiles.ToListAsync();
                 foreach (ProfileModel profile in allProfiles) 
                 { 
@@ -69,6 +72,8 @@ namespace Datingsida.Controllers
             {
                 ViewBag.showVisitLink = ViewData["ShowVisitLink"] = false;
                 ViewBag.showLinks = ViewData["ShowLinks"] = false;
+                ViewBag.showMessageForm = ViewData["ShowMessageForm"] = true;
+                ViewBag.showMessage = ViewData["ShowMessage"] = true;
                 var profileModel = await _context.Profiles
                 .FirstOrDefaultAsync(m => m.Id == id);
                 if (profileModel == null)
@@ -90,6 +95,8 @@ namespace Datingsida.Controllers
         {
             ViewBag.showVisitLink = ViewData["ShowVisitLink"] = true;
             ViewBag.showLinks = ViewData["ShowLinks"] = false;
+            ViewBag.showMessageForm = ViewData["ShowMessageForm"] = false;
+            ViewBag.showMessage = ViewData["ShowMessage"] = false;
             return View(await _context.Profiles.ToListAsync());
         }
         // POST: Profile/SearchResults
@@ -97,6 +104,8 @@ namespace Datingsida.Controllers
         {
             ViewBag.showVisitLink = ViewData["ShowVisitLink"] = true;
             ViewBag.showLinks = ViewData["ShowLinks"] = false;
+            ViewBag.showMessageForm = ViewData["ShowMessageForm"] = false;
+            ViewBag.showMessage = ViewData["ShowMessage"] = false;
             return View("Search",await _context.Profiles.Where(profile => profile.FirstName.Contains(SearchTerm) ||
                                                                           profile.LastName.Contains(SearchTerm)).ToListAsync());
         }
