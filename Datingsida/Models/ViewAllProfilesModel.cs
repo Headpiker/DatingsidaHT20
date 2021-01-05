@@ -7,8 +7,8 @@ namespace Datingsida.Models
 {
     public class ViewAllProfilesModel
     {
-        public List<ProfileModel> ProfileModels { get; set; }
-        public List<ProfileModel> AllProfileModels { get; set; }
-        public List<FriendRequestModel> FriendRequestModels { get; set; }
+        public List<ProfileModel> Profiles { get; set; }
+        public List<ProfileModel> AllProfiles { get; set; }
+        public List<FriendRequestModel> Requests { get; set; }
     }
 }
