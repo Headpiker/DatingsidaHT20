@@ -25,14 +25,11 @@ namespace Datingsida.Controllers
         [AllowAnonymous]
         public async Task<IActionResult> Index()
         {
+            var myModel = new ProfileMessageViewModel();
+            myModel.profiles = await _context.Profiles.ToListAsync();
+            myModel.messages = await _context.Messages.ToListAsync();
+            return View(myModel);
 
-            return View(await _context.Profiles.ToListAsync());
-            
-        }
-
-        public IActionResult Privacy()
-        {
-            return View();
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

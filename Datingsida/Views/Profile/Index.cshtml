@@ -1,4 +1,4 @@
-﻿@model IEnumerable<Datingsida.Models.ProfileModel>
+﻿@model ProfileMessageViewModel
 
 @{
     ViewData["Title"] = "Index";
@@ -8,8 +8,16 @@
 
 
 <div class="card-deck">
-    @foreach (var profile in Model)
+    @foreach (var profile in Model.profiles)
     { 
         <partial name="_DisplayProfilePartial" model="profile" view-data="ViewData" />
+    }
+</div>
+<br/>
+<h5>Dina meddelanden</h5>
+<div class="card-deck" >
+    @foreach (var message in Model.messages)
+    {
+        <partial name="_MessagesPartial" model="message" view-data="ViewData" />
     }
 </div>

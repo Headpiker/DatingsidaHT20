@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Datingsida.DataAccess;
 using Datingsida.Models;
+using Microsoft.AspNetCore.Identity;
 
 namespace Datingsida.Controllers.Api
 {
@@ -15,10 +16,12 @@ namespace Datingsida.Controllers.Api
     public class MessageApiController : ControllerBase
     {
         private readonly DatingDbContext _context;
+        private readonly UserManager<IdentityUser> _userManager;
 
-        public MessageApiController(DatingDbContext context)
+        public MessageApiController(DatingDbContext context, UserManager<IdentityUser> userManager)
         {
             _context = context;
+            _userManager = userManager;
         }
 
         // GET: api/MessageApi
@@ -75,13 +78,22 @@ namespace Datingsida.Controllers.Api
 
         // POST: api/MessageApi
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        [Route("postmessage")]
         [HttpPost]
-        public async Task<ActionResult<MessageModel>> PostMessageModel(MessageModel messageModel)
+        public void PostMessageModel(string titel, string messageText, string id)
         {
+            MessageModel messageModel = new MessageModel
+            {
+                Subject = titel,
+                MessageText = messageText,
+                ToId = id,
+                FromId = _userManager.GetUserId(User),
+                DateOfPost = DateTime.Now
+        };
             _context.Messages.Add(messageModel);
-            await _context.SaveChangesAsync();
+            _context.SaveChanges();
 
-            return CreatedAtAction("GetMessageModel", new { id = messageModel.MessageId }, messageModel);
+            //return CreatedAtAction("GetMessageModel", new { id = messageModel.MessageId }, messageModel);
         }
 
         // DELETE: api/MessageApi/5

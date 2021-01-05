@@ -1,10 +1,8 @@
-﻿@model IEnumerable<Datingsida.Models.ProfileModel>
+﻿@model  ProfileMessageViewModel
 @{
     ViewData["Title"] = "Home Page";
     ViewData["ShowVisitLink"] = true;
     ViewData["ShowLinks"] = false;
-    ViewData["ShowMessageForm"] = false;
-    ViewData["ShowMessage"] = false;
 }
 
 <div class="jumbotron">
@@ -21,7 +19,7 @@
     @{
         var r = new Random();
 
-        var threeRandomUser = Model.OrderBy(u => r.Next()).Take(3);
+        var threeRandomUser = Model.profiles.OrderBy(u => r.Next()).Take(3);
     }
     @foreach (var profile in threeRandomUser)
     {

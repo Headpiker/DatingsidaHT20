@@ -1,4 +1,4 @@
-﻿@model IEnumerable<Datingsida.Models.ProfileModel>
+﻿@model ProfileMessageViewModel
 
 @{
     ViewData["Title"] = "Visit";
@@ -8,8 +8,51 @@
 
 
 <div class="card-deck">
-    @foreach (var profile in Model)
+    @foreach (var profile in Model.profiles)
     {
         <partial name="_DisplayProfilePartial" model="profile" view-data="ViewData" />
+        <input value="@profile.OwnerId" id="id" name="id" type="hidden">
     }
 </div>
+<br />
+<div>
+    <form name="messageForm">
+        @Html.AntiForgeryToken()
+        <h5>Lämna ett meddelande</h5>
+        <input type="text" id="titel" name="titel" maxlength="30" placeholder="Titel" required>
+        <br />
+        <textarea id="messageText" name="text" maxlength="500" rows="3" cols="23" placeholder="Ditt meddelande" required></textarea>
+        <br />
+        <button type="button" id="send">Skicka</button>
+    </form>
+</div>
+<br />
+
+<h5>Meddelanden</h5>
+<div class="card-deck">
+    @foreach (var message in Model.messages)
+    {
+        <partial name="_MessagesPartial" model="message" view-data="ViewData" />
+    }
+</div>
+
+@section scripts {
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+
+            $("#send").click(function () {
+                
+                var titel = $("#titel").val();
+                var messageText = $("#messageText").val();
+                var id = $("#id").val();
+                $.post('/api/[controller]/postmessage/PostMessageModel', { "": [titel, messageText, id] })
+                .success(function () {window.location.reload()})
+                });
+
+
+            });
+        
+
+    </script>
+        }

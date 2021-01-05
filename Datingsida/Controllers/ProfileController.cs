@@ -19,12 +19,15 @@ namespace Datingsida.Controllers
         private readonly DatingDbContext _context;
         private readonly IWebHostEnvironment _hostEnvironment;
         private readonly UserManager<IdentityUser> _userManager;
+        private ProfileMessageViewModel myModel = new ProfileMessageViewModel();
 
         public ProfileController(DatingDbContext context, IWebHostEnvironment hostEnvironment, UserManager<IdentityUser> userManager)
         {
             _context = context;
             _hostEnvironment = hostEnvironment;
             _userManager = userManager;
+            myModel.profiles = _context.Profiles.ToList();
+            myModel.messages = _context.Messages.ToList();
         }
         
 
@@ -34,29 +37,41 @@ namespace Datingsida.Controllers
             
             //hämtar nuvarande användare (all data från Identity)
             var currentUser = await _userManager.GetUserAsync(User);
-
+            var currentUserHasProfile = false;
             if (currentUser != null)
             {
                 ViewBag.showVisitLink = ViewData["ShowVisitLink"] = false;
                 ViewBag.showLinks = ViewData["ShowLinks"] = true;
-                ViewBag.showMessageForm = ViewData["ShowMessageForm"] = false;
-                ViewBag.showMessage = ViewData["ShowMessage"] = true;
 
-                List<ProfileModel> allProfiles = await _context.Profiles.ToListAsync();
-                foreach (ProfileModel profile in allProfiles) 
+                foreach (ProfileModel profile in myModel.profiles) 
                 { 
                     if(currentUser.Id == profile.OwnerId)
                     {
-                        List<ProfileModel> lst = new List<ProfileModel>();
-                        lst.Add(profile);
-                        IEnumerable<ProfileModel> enumerableprofile = lst;
+                        List<ProfileModel> profileList = new List<ProfileModel>();
+                        profileList.Add(profile);
+                        IEnumerable<ProfileModel> enumerableProfile = profileList;
+                        myModel.profiles = enumerableProfile;
+                        currentUserHasProfile = true;
 
-                        return View(enumerableprofile);
                     }
                 }
-                
-                return RedirectToAction("Create","Profile");
-                
+                foreach (MessageModel message in myModel.messages)
+                {
+                    if (currentUser.Id == message.ToId)
+                    {
+                        List<MessageModel> messageList = new List<MessageModel>();
+                        messageList.Add(message);
+                        IEnumerable<MessageModel> enumerableMessages = messageList;
+                        myModel.messages = enumerableMessages;
+                        
+                    }
+                }
+
+                if (!currentUserHasProfile)
+                {
+                    return RedirectToAction("Create", "Profile");
+                }
+                return View(myModel);
             }
             else
             {
@@ -72,18 +87,18 @@ namespace Datingsida.Controllers
             {
                 ViewBag.showVisitLink = ViewData["ShowVisitLink"] = false;
                 ViewBag.showLinks = ViewData["ShowLinks"] = false;
-                ViewBag.showMessageForm = ViewData["ShowMessageForm"] = true;
-                ViewBag.showMessage = ViewData["ShowMessage"] = true;
+
                 var profileModel = await _context.Profiles
                 .FirstOrDefaultAsync(m => m.Id == id);
                 if (profileModel == null)
                 {
                     return NotFound();
                 }
-                List<ProfileModel> list = new List<ProfileModel>();
-                list.Add(profileModel);
-                IEnumerable<ProfileModel> enumerableprofile = list;
-                return View(enumerableprofile);
+                List<ProfileModel> profileList = new List<ProfileModel>();
+                profileList.Add(profileModel);
+                IEnumerable<ProfileModel> enumerableProfile = profileList;
+                myModel.profiles = enumerableProfile;
+                return View(myModel);
             }
             else
             {
@@ -95,8 +110,6 @@ namespace Datingsida.Controllers
         {
             ViewBag.showVisitLink = ViewData["ShowVisitLink"] = true;
             ViewBag.showLinks = ViewData["ShowLinks"] = false;
-            ViewBag.showMessageForm = ViewData["ShowMessageForm"] = false;
-            ViewBag.showMessage = ViewData["ShowMessage"] = false;
             return View(await _context.Profiles.ToListAsync());
         }
         // POST: Profile/SearchResults
@@ -104,10 +117,9 @@ namespace Datingsida.Controllers
         {
             ViewBag.showVisitLink = ViewData["ShowVisitLink"] = true;
             ViewBag.showLinks = ViewData["ShowLinks"] = false;
-            ViewBag.showMessageForm = ViewData["ShowMessageForm"] = false;
-            ViewBag.showMessage = ViewData["ShowMessage"] = false;
-            return View("Search",await _context.Profiles.Where(profile => profile.FirstName.Contains(SearchTerm) ||
-                                                                          profile.LastName.Contains(SearchTerm)).ToListAsync());
+            return View("Search",await _context.Profiles.
+                Where(profile => profile.FirstName.Contains(SearchTerm) ||
+                      profile.LastName.Contains(SearchTerm)).ToListAsync());
         }
       
 
