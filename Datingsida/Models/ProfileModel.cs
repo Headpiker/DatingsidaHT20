@@ -40,6 +40,14 @@ namespace Datingsida.Models
         public IList<FriendRequestModel> RequestReceivers { get; set; }
         public IList<FriendRequestModel> RequestSenders { get; set; }
 
+        public List<ProfileModel> friends = new List<ProfileModel>();
+        public List<ProfileModel> Userinfo { get; set; }
+
+        public void setFriends(ProfileModel user)
+        {
+            friends.Add(user);
+        }
+
 
 
         public ProfileModel()

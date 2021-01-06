@@ -32,8 +32,8 @@ namespace Datingsida.Controllers
 
         public ActionResult AddFriend(string userReceiver)
         {
-            FriendRequestModel user = new FriendRequestModel();
-            FriendRequestModel user1 = new FriendRequestModel();
+            ProfileModel user = new ProfileModel();
+            ProfileModel user1 = new ProfileModel();
             var friendrequest = new FriendList
             {
                 FriendRequestID = 1,
