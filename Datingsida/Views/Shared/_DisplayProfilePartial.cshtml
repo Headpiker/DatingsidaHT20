@@ -1,4 +1,5 @@
 ﻿@model ProfileModel
+@using Microsoft.AspNetCore.Identity;
 
 @{ 
     var showListLinks = (bool)ViewData["ShowLinks"];
@@ -35,7 +36,6 @@
 
     @Html.ActionLink(linkText: "Visit Profile", actionName: "Visit", controllerName: "Profile", routeValues: new { id = Model.Id }, htmlAttributes: new { @class = "btn btn-light" })
     @Html.ActionLink(linkText: "Add Friend", actionName: "AddFriend", controllerName: "FriendRequestModelController", routeValues: new { id = Model.Id }, htmlAttributes: new { @class = "btn btn-light" })
-
 
 </div>
     }
