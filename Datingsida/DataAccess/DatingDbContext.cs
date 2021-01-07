@@ -9,6 +9,10 @@ namespace Datingsida.DataAccess
 {
     public class DatingDbContext : DbContext
     {
+        public DatingDbContext()
+        {
+        }
+
         public DatingDbContext(DbContextOptions<DatingDbContext> options) : base(options)
         {
         }

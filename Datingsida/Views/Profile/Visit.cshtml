@@ -16,43 +16,49 @@
 </div>
 <br />
 <div>
-    <form name="messageForm">
-        @Html.AntiForgeryToken()
-        <h5>Lämna ett meddelande</h5>
-        <input type="text" id="titel" name="titel" maxlength="30" placeholder="Titel" required>
-        <br />
-        <textarea id="messageText" name="text" maxlength="500" rows="3" cols="23" placeholder="Ditt meddelande" required></textarea>
-        <br />
-        <button type="button" id="send">Skicka</button>
+<form>
+    <h5>Lämna ett meddelande</h5>
+    <input type="text" id="titel" name="titel" maxlength="30" placeholder="Titel">
+    <br />
+    <textarea id="messageText" name="text" maxlength="500" rows="3" cols="23" placeholder="Ditt meddelande"></textarea>
+    <br />
+    <input type="button" onclick= "messageFunction()" value="Skicka">
     </form>
+    <p id="felmeddelande"></p>
 </div>
 <br />
 
 <h5>Meddelanden</h5>
 <div class="card-deck">
-    @foreach (var message in Model.messages)
-    {
-        <partial name="_MessagesPartial" model="message" view-data="ViewData" />
-    }
-</div>
+        @foreach (var message in Model.messages)
+        {
+            <partial name="_MessagesPartial" model="message" view-data="ViewData" />
+        }
+ </div>
 
-@section scripts {
 
+
+@section scripts{
     <script type="text/javascript">
-        $(document).ready(function () {
-
-            $("#send").click(function () {
-                
-                var titel = $("#titel").val();
-                var messageText = $("#messageText").val();
-                var id = $("#id").val();
-                $.post('/api/[controller]/postmessage/PostMessageModel', { "": [titel, messageText, id] })
-                .success(function () {window.location.reload()})
-                });
-
+       
+        function messageFunction() {
+            var messageData = { subject: $("#titel").val(), messageText: $("#messageText").val(), toId: $("#id").val()};
+             
+            $.ajax({
+                type: "POST",
+                dataType: "json",
+                url: "/api/MessageApi/send",
+                data: JSON.stringify(messageData),
+                contentType: "application/json; charset=utf-8",
+                success: function (working) {
+                    location.reload();
+                },
+                error: function (working) {
+                    document.getElementById("felmeddelande").innerHTML = "Fyll i båda fälten";
+                }
 
             });
+            };
         
-
     </script>
-        }
+}

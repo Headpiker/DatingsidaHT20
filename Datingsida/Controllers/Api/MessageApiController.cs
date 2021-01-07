@@ -1,13 +1,15 @@
-﻿using System;
+﻿using Datingsida.DataAccess;
+using Datingsida.Models;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json.Linq;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Datingsida.DataAccess;
-using Datingsida.Models;
-using Microsoft.AspNetCore.Identity;
+
+// For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace Datingsida.Controllers.Api
 {
@@ -17,104 +19,58 @@ namespace Datingsida.Controllers.Api
     {
         private readonly DatingDbContext _context;
         private readonly UserManager<IdentityUser> _userManager;
-
         public MessageApiController(DatingDbContext context, UserManager<IdentityUser> userManager)
         {
             _context = context;
-            _userManager = userManager;
+            _userManager = userManager;  
         }
 
-        // GET: api/MessageApi
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<MessageModel>>> GetMessageModel()
-        {
-            return await _context.Messages.ToListAsync();
-        }
+        //// GET: api/<MessageApiController>
+        //[HttpGet]
+        //public IEnumerable<string> Get()
+        //{
+        //    return new string[] { "value1", "value2" };
+        //}
 
-        // GET: api/MessageApi/5
-        [HttpGet("{id}")]
-        public async Task<ActionResult<MessageModel>> GetMessageModel(int id)
-        {
-            var messageModel = await _context.Messages.FindAsync(id);
+        //// GET api/<MessageApiController>/5
+        //[HttpGet("{id}")]
+        //public string Get(int id)
+        //{
+        //    return "value";
+        //}
 
-            if (messageModel == null)
-            {
-                return NotFound();
-            }
-
-            return messageModel;
-        }
-
-        // PUT: api/MessageApi/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutMessageModel(int id, MessageModel messageModel)
-        {
-            if (id != messageModel.MessageId)
-            {
-                return BadRequest();
-            }
-
-            _context.Entry(messageModel).State = EntityState.Modified;
-
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!MessageModelExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
-            return NoContent();
-        }
-
-        // POST: api/MessageApi
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [Route("postmessage")]
+        // POST api/<MessageApiController>
+        [Route("send")]
         [HttpPost]
-        public void PostMessageModel(string titel, string messageText, string id)
+        [AllowAnonymous]
+        public bool Post(MessageModel message)
         {
-            MessageModel messageModel = new MessageModel
-            {
-                Subject = titel,
-                MessageText = messageText,
-                ToId = id,
-                FromId = _userManager.GetUserId(User),
-                DateOfPost = DateTime.Now
-        };
-            _context.Messages.Add(messageModel);
+            try { 
+            
+           message.FromId = _userManager.GetUserId(User);
+           message.DateOfPost = DateTime.Now;
+
+            
+            _context.Add(message);
             _context.SaveChanges();
-
-            //return CreatedAtAction("GetMessageModel", new { id = messageModel.MessageId }, messageModel);
-        }
-
-        // DELETE: api/MessageApi/5
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteMessageModel(int id)
-        {
-            var messageModel = await _context.Messages.FindAsync(id);
-            if (messageModel == null)
-            {
-                return NotFound();
+                return true;
             }
-
-            _context.Messages.Remove(messageModel);
-            await _context.SaveChangesAsync();
-
-            return NoContent();
+            catch(Exception e)
+            {
+                return false;
+            }
         }
 
-        private bool MessageModelExists(int id)
+        // PUT api/<MessageApiController>/5
+        [HttpPut("{id}")]
+        public void Put(int id, [FromBody] string value)
         {
-            return _context.Messages.Any(e => e.MessageId == id);
+        }
+
+        // DELETE api/<MessageApiController>/5
+        [HttpDelete("{id}")]
+        public void Delete(int id)
+        {
         }
     }
 }
