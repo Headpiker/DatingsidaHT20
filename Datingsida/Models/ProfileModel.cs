@@ -37,19 +37,23 @@ namespace Datingsida.Models
         public string Presentation { get; set; }
         public bool IsActive { get; set; }        
 
-        public List<ProfileModel> friends = new List<ProfileModel>();
+        
         public List<ProfileModel> Userinfo { get; set; }
 
+        
+        public ProfileModel()
+        {
+        }        
+
+    }
+
+    public class FriendListViewModel
+    {
+        public bool Status { get; set; }
+        public List<ProfileModel> friends = new List<ProfileModel>();
         public void setFriends(ProfileModel user)
         {
             friends.Add(user);
         }
-
-
-
-        public ProfileModel()
-        {
-        }
-        
     }
 }

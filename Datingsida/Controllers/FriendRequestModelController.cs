@@ -35,8 +35,7 @@ namespace Datingsida.Controllers
             ProfileModel user = new ProfileModel();
             ProfileModel user1 = new ProfileModel();
             var friendrequest = new FriendList
-            {
-                FriendRequestID = 1,
+            {                
                 Status = false,
                 UserReceiver = userReceiver,
                 UserSender = _userManager.GetUserId(User)
@@ -44,7 +43,7 @@ namespace Datingsida.Controllers
 
             _context.Add(friendrequest);
             _context.SaveChanges();
-            return RedirectToAction("Friends");
+            return RedirectToAction("FriendRequest");
         }
 
         public ActionResult AcceptFriendRequest(string UserSender, bool isAccepted)
@@ -70,6 +69,57 @@ namespace Datingsida.Controllers
                 return RedirectToAction("Friends");
             }
             return View();
+        }
+
+        public ActionResult GetFriendRequests()
+        {
+            var user = _userManager.GetUserId(User);
+            var count = _context.Friendlists.Count(u => u.UserReceiver == user && !u.Status);
+            return PartialView(count);
+
+        }
+
+        public ActionResult Friends()
+        {
+            var friendlist = new FriendListViewModel();
+            var user = _userManager.GetUserId(User);
+            ProfileModel viewmodel = new ProfileModel();
+
+            var requests = _context.Friendlists.Where(u => u.UserReceiver.Equals(user) || u.UserSender.Equals(user)).ToList();
+
+            if (requests != null && requests.Any())
+            {
+                foreach(var sök in requests)
+                {
+                    if (sök.Status && sök.UserReceiver.Equals(user))
+                    {
+                        var dbUser = _userManager.Users.Where(u => u.Id == sök.UserSender).First();
+                        var datingdbuser = _context.Profiles.Where(u => u.Id == int.Parse(sök.UserSender)).First();
+                        sök.UserSender = viewmodel.Id.ToString();
+                        viewmodel.FirstName = datingdbuser.FirstName;
+                        viewmodel.Age = datingdbuser.Age;
+                        viewmodel.Presentation = datingdbuser.Presentation;
+                        viewmodel.Gender = datingdbuser.Gender;
+                        friendlist.setFriends(viewmodel);
+                        friendlist.Status = sök.Status;                      
+                        
+                    }
+                    else if (sök.Status && sök.UserSender.Equals(user))
+                    {
+                        var dbUser = _userManager.Users.Where(u => u.Id == sök.UserReceiver).First();
+                        var datingdbuser = _context.Profiles.Where(u => u.Id == int.Parse(sök.UserReceiver)).First();
+                        sök.UserReceiver = viewmodel.Id.ToString();
+                        viewmodel.FirstName = datingdbuser.FirstName;
+                        viewmodel.Age = datingdbuser.Age;
+                        viewmodel.Presentation = datingdbuser.Presentation;
+                        viewmodel.Gender = datingdbuser.Gender;
+                        friendlist.setFriends(viewmodel);
+                        friendlist.Status = sök.Status;
+                    }
+                }
+                return View(friendlist);
+            }
+            return View(friendlist);
         }
         
     }
