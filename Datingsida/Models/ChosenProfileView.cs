@@ -7,9 +7,7 @@ namespace Datingsida.Models
 {
     public class ChosenProfileView
     {
-        public ProfileModel Profile { get; set; }
-        public FriendRequestModel ReceivedRequests { get; set; }
-        public FriendRequestModel SentRequests { get; set; }
+        public ProfileModel Profile { get; set; }        
 
     }
 }

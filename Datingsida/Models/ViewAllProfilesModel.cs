@@ -9,6 +9,6 @@ namespace Datingsida.Models
     {
         public List<ProfileModel> Profiles { get; set; }
         public List<ProfileModel> AllProfiles { get; set; }
-        public List<FriendRequestModel> Requests { get; set; }
+        public List<ProfileModel> Requests { get; set; }
     }
 }

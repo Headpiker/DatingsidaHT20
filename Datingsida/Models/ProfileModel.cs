@@ -35,10 +35,7 @@ namespace Datingsida.Models
         public IFormFile ImageFile { get; set; }
         [Required]
         public string Presentation { get; set; }
-        public bool IsActive { get; set; }
-
-        public IList<FriendRequestModel> RequestReceivers { get; set; }
-        public IList<FriendRequestModel> RequestSenders { get; set; }
+        public bool IsActive { get; set; }        
 
         public List<ProfileModel> friends = new List<ProfileModel>();
         public List<ProfileModel> Userinfo { get; set; }
