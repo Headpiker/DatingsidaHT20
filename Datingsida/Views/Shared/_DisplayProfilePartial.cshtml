@@ -1,12 +1,14 @@
 ﻿@model ProfileModel
 @using Microsoft.AspNetCore.Identity;
 
-@{ 
+@{
     var showListLinks = (bool)ViewData["ShowLinks"];
     var showVisitLink = (bool)ViewData["ShowVisitLink"];
-  }
+    var showFriendLink = (bool)ViewData["ShowFriendLink"];
+}
 
 <div class="card" style="max-width: 20rem">
+
     <img src="@Url.Content("~/image/"+ Model.ImageFilepath)"
          class="card-img-top"
          alt="profilbild" />
@@ -32,11 +34,23 @@
     }
     @if (showVisitLink)
     {
-<div class="card-body">
+        <div class="card-body">
 
-    @Html.ActionLink(linkText: "Visit Profile", actionName: "Visit", controllerName: "Profile", routeValues: new { id = Model.Id }, htmlAttributes: new { @class = "btn btn-light" })
-    @Html.ActionLink(linkText: "Add Friend", actionName: "AddFriend", controllerName: "FriendRequestModel", routeValues: new { userReceiver = User.Identity }, htmlAttributes: new { @class = "btn btn-light" })
+            @Html.ActionLink(linkText: "Visit Profile", actionName: "Visit", controllerName: "Profile", routeValues: new { id = Model.Id }, htmlAttributes: new { @class = "btn btn-light" })
+            @Html.ActionLink(linkText: "Add Friend", actionName: "AddFriend", controllerName: "FriendRequestModel", routeValues: new { userReceiver = Model.OwnerId }, htmlAttributes: new { @class = "btn btn-light" })
 
+        </div>
+    }
+    @if (showFriendLink)
+    {
+    <div class="card-body">
+
+                        @Html.ActionLink("Accept", "AcceptFriendRequest", "FriendRequestModel",
+                        new { UserSender = Model.OwnerId, isAccepted = true },
+                        new { @class = "btn btn-primary" })
+                        @Html.ActionLink("Decline", "AcceptFriendRequest", "FriendRequestModel",
+                        new { UserSender = Model.OwnerId, isAccepted = false },
+                        new { @class = "btn btn-primary" })
 </div>
     }
 </div>
