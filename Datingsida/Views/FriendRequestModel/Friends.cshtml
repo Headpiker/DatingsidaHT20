@@ -1,0 +1,18 @@
+﻿@model IEnumerable<Datingsida.Models.FriendListViewModel>
+
+@{ ViewData["Title"] = "Friends";
+
+    ViewData["ShowVisitLink"] = true;
+    ViewData["ShowLinks"] = false;
+
+
+}
+
+@foreach (var profile in Model)
+{    
+    @await Html.PartialAsync("_DisplayProfilePartial", profile.friends);
+    
+}
+<li class="nav-item">
+    <a class="nav-link text-dark" asp-area="" asp-controller="FriendRequestModel" asp-action="Friends">Friends</a>
+</li>
