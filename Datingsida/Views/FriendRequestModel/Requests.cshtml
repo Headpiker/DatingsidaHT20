@@ -1,0 +1,26 @@
+﻿@model IEnumerable<Datingsida.Models.ProfileModel>
+
+@{ ViewData["Title"] = "Friends";
+
+    ViewData["ShowVisitLink"] = true;
+    ViewData["ShowLinks"] = false;
+}
+@if (Model.Any())
+{
+    @foreach (var profile in Model)
+    {
+        @await Html.PartialAsync("_DisplayProfilePartial", profile);
+
+        <div class="card-body">
+            @Html.ActionLink(linkText: "Visit Profile", actionName: "Visit", controllerName: "Profile",
+          routeValues: new { id = profile.Id }, htmlAttributes: new { @class = "btn btn-light" })
+            @Html.ActionLink("Accept", "AcceptFriendRequest", "FriendRequestModel",
+          new { UserSender = profile.OwnerId, isAccepted = true },
+          new { @class = "btn btn-primary" })
+            @Html.ActionLink("Decline", "AcceptFriendRequest", "FriendRequestModel",
+          new { UserSender = profile.OwnerId, isAccepted = false },
+          new { @class = "btn btn-primary" })
+        </div>
+    }
+}
+

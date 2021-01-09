@@ -1,5 +1,4 @@
 ﻿@model ProfileModel
-@using Microsoft.AspNetCore.Identity;
 
 @{ 
     var showListLinks = (bool)ViewData["ShowLinks"];
@@ -32,11 +31,11 @@
     }
     @if (showVisitLink)
     {
-<div class="card-body">
+        <div class="card-body">
 
-    @Html.ActionLink(linkText: "Visit Profile", actionName: "Visit", controllerName: "Profile", routeValues: new { id = Model.Id }, htmlAttributes: new { @class = "btn btn-light" })
-    @Html.ActionLink(linkText: "Add Friend", actionName: "AddFriend", controllerName: "FriendRequestModel", routeValues: new { userReceiver = User.Identity }, htmlAttributes: new { @class = "btn btn-light" })
+            @Html.ActionLink(linkText: "Visit Profile", actionName: "Visit", controllerName: "Profile", routeValues: new { id = Model.Id }, htmlAttributes: new { @class = "btn btn-light" })
+            @Html.ActionLink(linkText: "Add Friend", actionName: "AddFriend", controllerName: "FriendRequestModel", routeValues: new { userReceiver = Model.OwnerId}, htmlAttributes: new { @class = "btn btn-light" })
 
-</div>
+        </div>
     }
 </div>
