@@ -26,13 +26,11 @@ namespace Datingsida.Controllers
 
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Profiles.ToListAsync());
-            
-        }
+            var myModel = new ProfileMessageViewModel();
+            myModel.profiles = await _context.Profiles.ToListAsync();
+            myModel.messages = await _context.Messages.ToListAsync();
+            return View(myModel);
 
-        public IActionResult Privacy()
-        {
-            return View();
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

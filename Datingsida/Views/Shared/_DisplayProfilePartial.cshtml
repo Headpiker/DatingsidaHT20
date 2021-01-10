@@ -1,9 +1,10 @@
 ﻿@model ProfileModel
 
+
 @{
     var showListLinks = (bool)ViewData["ShowLinks"];
     var showVisitLink = (bool)ViewData["ShowVisitLink"];
-  }
+}
 
 <div class="card" style="max-width: 20rem">
     <img src="@Url.Content("~/image/"+ Model.ImageFilepath)"
@@ -33,9 +34,13 @@
     {
         <div class="card-body">
 
-            @Html.ActionLink(linkText: "Visit Profile", actionName: "Visit", controllerName: "Profile", routeValues: new { id = Model.Id }, htmlAttributes: new { @class = "btn btn-light" })
-            @Html.ActionLink(linkText: "Add Friend", actionName: "AddFriend", controllerName: "FriendRequestModel", routeValues: new { userReceiver = Model.OwnerId}, htmlAttributes: new { @class = "btn btn-light" })
+            @Html.ActionLink(linkText: "Visit Profile", actionName: "Visit", controllerName: "Profile", 
+             routeValues: new { id = Model.Id }, htmlAttributes: new { @class = "btn btn-light" })
+            @Html.ActionLink(linkText: "Add Friend", actionName: "AddFriend", controllerName: "FriendRequestModel", 
+             routeValues: new { userReceiver = Model.OwnerId}, htmlAttributes: new { @class = "btn btn-light" })
 
         </div>
     }
 </div>
+
+

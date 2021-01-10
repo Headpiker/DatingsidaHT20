@@ -12,7 +12,7 @@ namespace Datingsida.Models
         [Key]
         public int MessageId { get; set; }
         [Required]
-        public string Subjekt { get; set; }
+        public string Subject { get; set; }
         [Required]
         public string MessageText { get; set; }
         [ForeignKey ("ToId")]

@@ -19,12 +19,15 @@ namespace Datingsida.Controllers
         private readonly DatingDbContext _context;
         private readonly IWebHostEnvironment _hostEnvironment;
         private readonly UserManager<IdentityUser> _userManager;
+        private ProfileMessageViewModel myModel = new ProfileMessageViewModel();
 
         public ProfileController(DatingDbContext context, IWebHostEnvironment hostEnvironment, UserManager<IdentityUser> userManager)
         {
             _context = context;
             _hostEnvironment = hostEnvironment;
             _userManager = userManager;
+            myModel.profiles = _context.Profiles.ToList();
+            myModel.messages = _context.Messages.ToList();
         }
         
 
@@ -34,27 +37,41 @@ namespace Datingsida.Controllers
             
             //hämtar nuvarande användare (all data från Identity)
             var currentUser = await _userManager.GetUserAsync(User);
-
+            var currentUserHasProfile = false;
             if (currentUser != null)
             {
                 ViewBag.showVisitLink = ViewData["ShowVisitLink"] = false;
                 ViewBag.showLinks = ViewData["ShowLinks"] = true;
-                ViewBag.showFriendLink = ViewData["ShowFriendLink"] = true;
-                List<ProfileModel> allProfiles = await _context.Profiles.ToListAsync();
-                foreach (ProfileModel profile in allProfiles) 
+
+                foreach (ProfileModel profile in myModel.profiles) 
                 { 
                     if(currentUser.Id == profile.OwnerId)
                     {
-                        List<ProfileModel> lst = new List<ProfileModel>();
-                        lst.Add(profile);
-                        IEnumerable<ProfileModel> enumerableprofile = lst;
+                        List<ProfileModel> profileList = new List<ProfileModel>();
+                        profileList.Add(profile);
+                        IEnumerable<ProfileModel> enumerableProfile = profileList;
+                        myModel.profiles = enumerableProfile;
+                        currentUserHasProfile = true;
 
-                        return View(enumerableprofile);
                     }
                 }
-                
-                return RedirectToAction("Create","Profile");
-                
+                foreach (MessageModel message in myModel.messages)
+                {
+                    if (currentUser.Id == message.ToId)
+                    {
+                        List<MessageModel> messageList = new List<MessageModel>();
+                        messageList.Add(message);
+                        IEnumerable<MessageModel> enumerableMessages = messageList;
+                        myModel.messages = enumerableMessages;
+                        
+                    }
+                }
+
+                if (!currentUserHasProfile)
+                {
+                    return RedirectToAction("Create", "Profile");
+                }
+                return View(myModel);
             }
             else
             {
@@ -70,17 +87,18 @@ namespace Datingsida.Controllers
             {
                 ViewBag.showVisitLink = ViewData["ShowVisitLink"] = false;
                 ViewBag.showLinks = ViewData["ShowLinks"] = false;
-                ViewBag.showFriendLink = ViewData["ShowFriendLink"] = true;
+
                 var profileModel = await _context.Profiles
                 .FirstOrDefaultAsync(m => m.Id == id);
                 if (profileModel == null)
                 {
                     return NotFound();
                 }
-                List<ProfileModel> list = new List<ProfileModel>();
-                list.Add(profileModel);
-                IEnumerable<ProfileModel> enumerableprofile = list;
-                return View(enumerableprofile);
+                List<ProfileModel> profileList = new List<ProfileModel>();
+                profileList.Add(profileModel);
+                IEnumerable<ProfileModel> enumerableProfile = profileList;
+                myModel.profiles = enumerableProfile;
+                return View(myModel);
             }
             else
             {
@@ -92,7 +110,6 @@ namespace Datingsida.Controllers
         {
             ViewBag.showVisitLink = ViewData["ShowVisitLink"] = true;
             ViewBag.showLinks = ViewData["ShowLinks"] = false;
-            ViewBag.showFriendLink = ViewData["ShowFriendLink"] = true;
             return View(await _context.Profiles.ToListAsync());
         }
         // POST: Profile/SearchResults
@@ -100,9 +117,9 @@ namespace Datingsida.Controllers
         {
             ViewBag.showVisitLink = ViewData["ShowVisitLink"] = true;
             ViewBag.showLinks = ViewData["ShowLinks"] = false;
-            ViewBag.showFriendLink = ViewData["ShowFriendLink"] = true;
-            return View("Search",await _context.Profiles.Where(profile => profile.FirstName.Contains(SearchTerm) ||
-                                                                          profile.LastName.Contains(SearchTerm)).ToListAsync());
+            return View("Search",await _context.Profiles.
+                Where(profile => profile.FirstName.Contains(SearchTerm) ||
+                      profile.LastName.Contains(SearchTerm)).ToListAsync());
         }
       
 
@@ -126,7 +143,7 @@ namespace Datingsida.Controllers
                 string wwwPath = _hostEnvironment.WebRootPath;
                 string file = Path.GetFileNameWithoutExtension(profileModel.ImageFile.FileName);
                 string extension = Path.GetExtension(profileModel.ImageFile.FileName);
-                profileModel.ImageFilepath = file = file + DateTime.Now.ToString("yymmddss") + extension;
+                profileModel.ImageFilepath = file = file + DateTime.Now.ToString("yyMMddss") + extension;
                 string path = Path.Combine(wwwPath + "/Image/", file);
                 using (var fileStream = new FileStream(path,FileMode.Create))
                 {
@@ -154,10 +171,14 @@ namespace Datingsida.Controllers
             }
 
             var profileModel = await _context.Profiles.FindAsync(id);
+
             if (profileModel == null)
             {
                 return NotFound();
             }
+            //Vi sparar namnet på bilden och använder den i Edit POST
+            var imageFilepath = profileModel.ImageFilepath;
+            TempData["imageFilepath"] = imageFilepath;
             return View(profileModel);
         }
 
@@ -166,7 +187,7 @@ namespace Datingsida.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,FirstName,LastName,Age,Gender,Sexuality,ImageFilepath,Presentation,IsActive")] ProfileModel profileModel)
+        public async Task<IActionResult> Edit(int id,[Bind("Id,FirstName,LastName,Age,Gender,Sexuality,ImageFile,Presentation")] ProfileModel profileModel)
         {
             if (id != profileModel.Id)
             {
@@ -180,13 +201,22 @@ namespace Datingsida.Controllers
                     string wwwPath = _hostEnvironment.WebRootPath;
                     string file = Path.GetFileNameWithoutExtension(profileModel.ImageFile.FileName);
                     string extension = Path.GetExtension(profileModel.ImageFile.FileName);
-                    profileModel.ImageFilepath = file = file + DateTime.Now.ToString("yymmddss") + extension;
-                    string path = Path.Combine(wwwPath + "/Image/", file);
-                    using (var fileStream = new FileStream(path, FileMode.Create))
-                    {
-                        await profileModel.ImageFile.CopyToAsync(fileStream);
-                    }
+                    profileModel.ImageFilepath = file = file + DateTime.Now.ToString("yyMMddss") + extension;
+                    string newPath = Path.Combine(wwwPath+"/Image/", file);
 
+                    //Här får vi namnet på den gamla bilden från Edit Get.
+                    string oldImageFilepath = TempData["imageFilepath"].ToString();
+                    string oldPath = Path.Combine(wwwPath + "/Image/", oldImageFilepath);
+
+                    if (!newPath.Equals(oldPath))
+                    {
+                        using (var fileStream = new FileStream(newPath, FileMode.Create))
+                        {
+                            await profileModel.ImageFile.CopyToAsync(fileStream);
+                        }
+
+                        System.IO.File.Delete(oldPath);
+                    }
                     profileModel.OwnerId = _userManager.GetUserId(User);
                     profileModel.IsActive = true;
 
