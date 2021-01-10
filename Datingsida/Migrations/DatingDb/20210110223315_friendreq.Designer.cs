@@ -9,8 +9,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Datingsida.Migrations.DatingDb
 {
     [DbContext(typeof(DatingDbContext))]
-    [Migration("20210110202518_first")]
-    partial class first
+    [Migration("20210110223315_friendreq")]
+    partial class friendreq
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {

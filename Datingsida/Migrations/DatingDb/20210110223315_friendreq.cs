@@ -2,7 +2,7 @@
 
 namespace Datingsida.Migrations.DatingDb
 {
-    public partial class first : Migration
+    public partial class friendreq : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {

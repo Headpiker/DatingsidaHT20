@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Datingsida.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20210110202428_användare")]
+    [Migration("20210110223242_användare")]
     partial class användare
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

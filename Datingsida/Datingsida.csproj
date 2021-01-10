@@ -7,6 +7,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Migrations\ApplicationDb\**" />
+    <Content Remove="Migrations\ApplicationDb\**" />
+    <EmbeddedResource Remove="Migrations\ApplicationDb\**" />
+    <None Remove="Migrations\ApplicationDb\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="5.0.1" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="5.0.1" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="5.0.1" />
@@ -19,7 +26,6 @@
 
   <ItemGroup>
     <Folder Include="Data\Migrations\" />
-    <Folder Include="Migrations\ApplicationDb\" />
     <Folder Include="wwwroot\Image\" />
   </ItemGroup>
 
