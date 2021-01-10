@@ -127,24 +127,23 @@ namespace Datingsida.Controllers
 
             if (requests != null && requests.Any())
             {
-                foreach (var request in requests)
+                    foreach (var request in requests)
                 {
                     if (!request.Status)
                     {
                         var senderProfile = _context.Profiles.Where(u => u.OwnerId == request.UserSender).First();
-                        // ProfileIndexViewModel users = new ProfileIndexViewModel();
-                        //UserViewModel userSender = new UserViewModel();
-                        //userSender.Id = senderProfile.Id;
-                        //userSender.Username = senderProfile.UserName;
-                        //userSender.Age = senderProfile.Age;
-                        //userSender.Description = senderProfile.Description;
-                        //userSender.Gender = senderProfile.Gender;
                         friendRequests.Add(senderProfile);
-                        //friendRequests.Status = request.Status;
                         enumerableFriendRequests = friendRequests;
                     }
                 }
-                return View(enumerableFriendRequests);
+                if (enumerableFriendRequests != null)
+                {
+                    return View(enumerableFriendRequests);
+                }
+                TempData["noFriend"] = ViewData["noFriends"] = false;
+                TempData["noFriendRequest"] = ViewData["noFriendRequests"] = true;
+                return RedirectToAction("NoFriendOrFriendRequest");
+
             }
             TempData["noFriend"] = ViewData["noFriends"] = false;
             TempData["noFriendRequest"] = ViewData["noFriendRequests"] = true;

@@ -14,7 +14,7 @@ namespace Datingsida.DataAccess
         }
 
         public DbSet<ProfileModel> Profiles { get; set; }
-        public DbSet<ProfileModel> Request { get; set; }
+        public DbSet<FriendList> Request { get; set; }
         public DbSet<FriendList> Friendlists { get; set; }
 
     }
