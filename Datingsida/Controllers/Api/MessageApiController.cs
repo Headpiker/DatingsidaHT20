@@ -25,21 +25,7 @@ namespace Datingsida.Controllers.Api
             _userManager = userManager;  
         }
 
-        //// GET: api/<MessageApiController>
-        //[HttpGet]
-        //public IEnumerable<string> Get()
-        //{
-        //    return new string[] { "value1", "value2" };
-        //}
-
-        //// GET api/<MessageApiController>/5
-        //[HttpGet("{id}")]
-        //public string Get(int id)
-        //{
-        //    return "value";
-        //}
-
-        // POST api/<MessageApiController>
+        
         [Route("send")]
         [HttpPost]
         [AllowAnonymous]
@@ -61,16 +47,5 @@ namespace Datingsida.Controllers.Api
             }
         }
 
-        // PUT api/<MessageApiController>/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
-        {
-        }
-
-        // DELETE api/<MessageApiController>/5
-        [HttpDelete("{id}")]
-        public void Delete(int id)
-        {
-        }
     }
 }
