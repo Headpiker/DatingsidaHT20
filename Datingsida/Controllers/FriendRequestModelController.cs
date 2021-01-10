@@ -32,21 +32,21 @@ namespace Datingsida.Controllers
 
         public ActionResult AddFriend(string userReceiver)
         {
+            //ProfileModel user = new ProfileModel();
+            //ProfileModel user1 = new ProfileModel();
+            //ProfileModel user = new ProfileModel();
+            //ProfileModel user1 = new ProfileModel();
             var friendrequest = new FriendList
             {
-                Status = false,
-                UserReceiver = userReceiver,
-                UserSender = _userManager.GetUserId(User)
-            };
 
-            _context.Add(friendrequest);
+                Status = false,
             _context.SaveChanges();
             return RedirectToAction("Friends");
+            };
+            _context.Add(friendrequest);
+            _context.SaveChanges();
+            return RedirectToAction("GetFriendRequests");
         }
-
-        public ActionResult AcceptFriendRequest(string UserSender, bool? isAccepted)
-        {
-            var user = _userManager.GetUserId(User); //Hämtar ID för den inloggade användaren
             if (ModelState.IsValid)
             {
                 if (isAccepted != null)
@@ -54,7 +54,7 @@ namespace Datingsida.Controllers
                     //Hämtar dbc där den som tar emot friendreq är den inloggade användaren och någon annan skickar friendreq
                     var request = _context.Friendlists.FirstOrDefault(u => u.UserSender.Equals(UserSender) && u.UserReceiver.Equals(user));
                     request.Status = (bool)isAccepted;
-
+            {
                     if (request.Status)
                     {
                         //Kollar om request har ändrat state, gått från true till false eller vice versa
@@ -70,13 +70,17 @@ namespace Datingsida.Controllers
                 }
             }
             return View();
-        }
-
+                _context.SaveChanges();
+                return RedirectToAction("Friends");
         public string GetFriendRequests()
-        {
-            var user = _userManager.GetUserId(User);
+            return View();
+        }
             var count = _context.Friendlists.Count(u => u.UserReceiver.Equals(user) && !u.Status);
             return count.ToString();
+            var user = _userManager.GetUserId(User);
+            var count = _context.Friendlists.Count(u => u.UserReceiver.Equals(user) && !u.Status);
+            return RedirectToAction("Friends");
+
         }
 
         public ActionResult Friends()
@@ -99,18 +103,14 @@ namespace Datingsida.Controllers
 
                         return View(enumerableFriendProfiles);
                     }
-                    else if (friendrequest.Status && friendrequest.UserSender.Equals(user))
-                    {
-                        var dbUser = _context.Profiles.Where(u => u.OwnerId == friendrequest.UserReceiver).First();
-                        friendlist.setFriends(dbUser);
                         List<ProfileModel> lst = new List<ProfileModel>();
                         lst = friendlist.friends;
                         IEnumerable<ProfileModel> enumerableFriendProfiles = lst;
 
-                        return View(enumerableFriendProfiles);
-                    }
-                }
-            }
+                        List<ProfileModel> lst = new List<ProfileModel>();
+                        lst = friendlist.friends;
+                        IEnumerable<ProfileModel> enumerableFriendProfiles = lst;
+
             TempData["noFriend"] =  ViewData["noFriends"] = true;
             TempData["noFriendRequest"] = ViewData["noFriendRequests"] = false;
   
@@ -156,5 +156,9 @@ namespace Datingsida.Controllers
 
             return View();
         }
+            }
+            return View(friendlist);
+        }
+        
     }
 }
