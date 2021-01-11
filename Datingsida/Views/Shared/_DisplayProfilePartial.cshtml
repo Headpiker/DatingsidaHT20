@@ -2,8 +2,9 @@
 
 
 @{
-    var showListLinks = (bool)ViewData["ShowLinks"];
+    var showListLink = (bool)ViewData["ShowLink"];
     var showVisitLink = (bool)ViewData["ShowVisitLink"];
+    var showAddLink = (bool)ViewData["ShowAddLink"];
 }
 
 <div class="card" style="max-width: 20rem">
@@ -21,7 +22,7 @@
         <li class="list-group-item">@Model.Gender</li>
         <li class="list-group-item">@Model.Sexuality</li>
     </ul>
-    @if (showListLinks)
+    @if (showListLink)
     {
 
         <div class="card-body">
@@ -34,10 +35,17 @@
     {
         <div class="card-body">
 
-            @Html.ActionLink(linkText: "Visit Profile", actionName: "Visit", controllerName: "Profile", 
+            @Html.ActionLink(linkText: "Visit Profile", actionName: "Visit", controllerName: "Profile",
              routeValues: new { id = Model.Id }, htmlAttributes: new { @class = "btn btn-light" })
-            @Html.ActionLink(linkText: "Add Friend", actionName: "AddFriend", controllerName: "FriendRequestModel", 
-             routeValues: new { userReceiver = Model.OwnerId}, htmlAttributes: new { @class = "btn btn-light" })
+
+        </div>
+    }
+    @if (showAddLink)
+    {
+        <div class="card-body">
+
+         @Html.ActionLink(linkText: "Add Friend", actionName: "AddFriend", controllerName: "FriendRequestModel",
+             routeValues: new { userReceiver = Model.OwnerId }, htmlAttributes: new { @class = "btn btn-light" })
 
         </div>
     }

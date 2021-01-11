@@ -39,7 +39,7 @@ namespace Datingsida
             services.AddDatabaseDeveloperPageExceptionFilter();
 
             services.AddDefaultIdentity<IdentityUser>(options => 
-                options.SignIn.RequireConfirmedAccount = true) 
+                options.SignIn.RequireConfirmedAccount = false) 
                 .AddEntityFrameworkStores<ApplicationDbContext>();
             services.AddControllersWithViews();
             //Globaly demands that you are logged in.

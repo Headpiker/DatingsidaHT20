@@ -2,8 +2,9 @@
 
 @{ ViewData["Title"] = "Friends";
 
+    ViewData["ShowLink"] = false;
     ViewData["ShowVisitLink"] = true;
-    ViewData["ShowLinks"] = false;
+    ViewData["ShowAddLink"] = false;
 }
 
     @foreach (var profile in Model)
@@ -11,8 +12,6 @@
         @await Html.PartialAsync("_DisplayProfilePartial", profile);
 
         <div class="card-body">
-            @Html.ActionLink(linkText: "Visit Profile", actionName: "Visit", controllerName: "Profile",
-          routeValues: new { id = profile.Id }, htmlAttributes: new { @class = "btn btn-light" })
             @Html.ActionLink("Accept", "AcceptFriendRequest", "FriendRequestModel",
           new { UserSender = profile.OwnerId, isAccepted = true },
           new { @class = "btn btn-primary" })

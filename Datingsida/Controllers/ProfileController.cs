@@ -40,8 +40,9 @@ namespace Datingsida.Controllers
             var currentUserHasProfile = false;
             if (currentUser != null)
             {
+                ViewBag.showListLink = ViewData["ShowLink"] = true;
                 ViewBag.showVisitLink = ViewData["ShowVisitLink"] = false;
-                ViewBag.showLinks = ViewData["ShowLinks"] = true;
+                ViewBag.showAddLink = ViewData["ShowAddLink"] = false;
 
                 foreach (ProfileModel profile in myModel.profiles) 
                 { 
@@ -82,11 +83,35 @@ namespace Datingsida.Controllers
         // GET: Profile/Visit
         public async Task<IActionResult> Visit(int? id)
         {
-
-             if (id != null)
+            var user = _userManager.GetUserId(User);
+            var userProfiles = _context.Profiles;
+            var requests = _context.Friendlists.Where(u => u.UserReceiver.Equals(user) || u.UserSender.Equals(user)).ToList();
+            var userId = 0;
+            foreach (ProfileModel profile in userProfiles)
             {
+                if (profile.OwnerId.Equals(user))
+                { 
+                    userId = profile.Id; 
+                }
+            }
+            
+            if (id != null)
+            {
+                ViewBag.showListLink = ViewData["ShowLink"] = false;
                 ViewBag.showVisitLink = ViewData["ShowVisitLink"] = false;
-                ViewBag.showLinks = ViewData["ShowLinks"] = false;
+                ViewBag.showAddLink = ViewData["ShowAddLink"] = false;
+                if (requests.Count() == 0 && userId != id) 
+                {
+                    ViewBag.showAddLink = ViewData["ShowAddLink"] = true;
+                }
+                foreach (var friendrequest in requests)
+                {
+                    if ((!friendrequest.Status) && userId != id)
+                    {
+                        ViewBag.showAddLink = ViewData["ShowAddLink"] = true;
+                    }
+                    
+                }
 
                 var profileModel = await _context.Profiles
                 .FirstOrDefaultAsync(m => m.Id == id);
@@ -108,15 +133,17 @@ namespace Datingsida.Controllers
         // GET: Profile/Search
         public async Task<IActionResult> Search()
         {
+            ViewBag.showListLink = ViewData["ShowLink"] = false;
             ViewBag.showVisitLink = ViewData["ShowVisitLink"] = true;
-            ViewBag.showLinks = ViewData["ShowLinks"] = false;
+            ViewBag.showAddLink = ViewData["ShowAddLink"] = false;
             return View(await _context.Profiles.ToListAsync());
         }
         // POST: Profile/SearchResults
         public async Task<IActionResult> SearchResults(String SearchTerm)
         {
+            ViewBag.showListLink = ViewData["ShowLink"] = false;
             ViewBag.showVisitLink = ViewData["ShowVisitLink"] = true;
-            ViewBag.showLinks = ViewData["ShowLinks"] = false;
+            ViewBag.showAddLink = ViewData["ShowAddLink"] = true;
             return View("Search",await _context.Profiles.
                 Where(profile => profile.FirstName.Contains(SearchTerm) ||
                       profile.LastName.Contains(SearchTerm)).ToListAsync());
