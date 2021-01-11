@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Datingsida.Migrations.DatingDb
 {
     [DbContext(typeof(DatingDbContext))]
-    [Migration("20210111082648_project")]
-    partial class project
+    [Migration("20210110224816_vänförfrågan")]
+    partial class vänförfrågan
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {

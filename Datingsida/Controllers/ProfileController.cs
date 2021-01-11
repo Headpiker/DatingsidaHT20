@@ -41,9 +41,8 @@ namespace Datingsida.Controllers
             var currentUserHasProfile = false;
             if (currentUser != null)
             {
-                ViewBag.showListLink = ViewData["ShowLink"] = true;
                 ViewBag.showVisitLink = ViewData["ShowVisitLink"] = false;
-                ViewBag.showAddLink = ViewData["ShowAddLink"] = false;
+                ViewBag.showLinks = ViewData["ShowLinks"] = true;
 
                 foreach (ProfileModel profile in myModel.profiles) 
                 { 

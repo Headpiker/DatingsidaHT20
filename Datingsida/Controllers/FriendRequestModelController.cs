@@ -135,7 +135,15 @@ namespace Datingsida.Controllers
                     if (!request.Status)
                     {
                         var senderProfile = _context.Profiles.Where(u => u.OwnerId == request.UserSender).First();
+                        // ProfileIndexViewModel users = new ProfileIndexViewModel();
+                        //UserViewModel userSender = new UserViewModel();
+                        //userSender.Id = senderProfile.Id;
+                        //userSender.Username = senderProfile.UserName;
+                        //userSender.Age = senderProfile.Age;
+                        //userSender.Description = senderProfile.Description;
+                        //userSender.Gender = senderProfile.Gender;
                         friendRequests.Add(senderProfile);
+                        //friendRequests.Status = request.Status;
                         enumerableFriendRequests = friendRequests;
                     }
                 }
