@@ -6,11 +6,11 @@
     ViewData["ShowVisitLink"] = true;
     ViewData["ShowAddLink"] = false;
 }
-@if (Model.Any())
-{
+
     @foreach (var profile in Model)
     {
         @await Html.PartialAsync("_DisplayProfilePartial", profile);
+        <br/>
     }
-}
+
 

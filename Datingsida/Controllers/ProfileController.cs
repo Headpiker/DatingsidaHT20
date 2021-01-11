@@ -56,16 +56,17 @@ namespace Datingsida.Controllers
 
                     }
                 }
+              
                 foreach (MessageModel message in myModel.messages)
                 {
+                    List<MessageModel> messageList = new List<MessageModel>();
                     if (currentUser.Id == message.ToId)
                     {
-                        List<MessageModel> messageList = new List<MessageModel>();
                         messageList.Add(message);
-                        IEnumerable<MessageModel> enumerableMessages = messageList;
-                        myModel.messages = enumerableMessages;
-                        
+
                     }
+                    IEnumerable<MessageModel> enumerableMessages = messageList;
+                    myModel.messages = enumerableMessages;
                 }
 
                 if (!currentUserHasProfile)
@@ -85,32 +86,48 @@ namespace Datingsida.Controllers
         {
             var user = _userManager.GetUserId(User);
             var userProfiles = _context.Profiles;
-            var requests = _context.Friendlists.Where(u => u.UserReceiver.Equals(user) || u.UserSender.Equals(user)).ToList();
-            var userId = 0;
+            var requests = _context.Friendlists;
+            
+            var inloggadUserId = 0;
+            var recieverOwnerId ="";
             foreach (ProfileModel profile in userProfiles)
             {
                 if (profile.OwnerId.Equals(user))
                 { 
-                    userId = profile.Id; 
+                    inloggadUserId = profile.Id; 
+                }
+                if (profile.Id.Equals(id)) 
+                {
+                    recieverOwnerId = profile.OwnerId;
                 }
             }
-            
+            foreach (MessageModel message in myModel.messages)
+            {
+                List<MessageModel> messageList = new List<MessageModel>();
+                if (recieverOwnerId == message.ToId)
+                {
+                    messageList.Add(message);
+                       
+                }
+                IEnumerable<MessageModel> enumerableMessages = messageList;
+                myModel.messages = enumerableMessages;
+            }
+
             if (id != null)
             {
                 ViewBag.showListLink = ViewData["ShowLink"] = false;
                 ViewBag.showVisitLink = ViewData["ShowVisitLink"] = false;
-                ViewBag.showAddLink = ViewData["ShowAddLink"] = false;
-                if (requests.Count() == 0 && userId != id) 
-                {
-                    ViewBag.showAddLink = ViewData["ShowAddLink"] = true;
-                }
+                ViewBag.showAddLink = ViewData["ShowAddLink"] = true;
                 foreach (var friendrequest in requests)
                 {
-                    if ((!friendrequest.Status) && userId != id)
-                    {
-                        ViewBag.showAddLink = ViewData["ShowAddLink"] = true;
+                    if (friendrequest.Status && inloggadUserId != id && 
+                        (friendrequest.UserReceiver.Equals(user) && friendrequest.UserSender.Equals(recieverOwnerId) ||
+                        friendrequest.UserSender.Equals(user) && friendrequest.UserReceiver.Equals(recieverOwnerId)))
+                    {   
+                      
+                            ViewBag.showAddLink = ViewData["ShowAddLink"] = false;
+                        
                     }
-                    
                 }
 
                 var profileModel = await _context.Profiles

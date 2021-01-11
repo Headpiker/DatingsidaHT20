@@ -91,25 +91,28 @@ namespace Datingsida.Controllers
                 {
                     if (friendrequest.Status && friendrequest.UserReceiver.Equals(user))
                     {
-                        var dbUser = _context.Profiles.Where(u => u.OwnerId == friendrequest.UserSender).First();
-                        friendlist.setFriends(dbUser);
-                        List<ProfileModel> lst = new List<ProfileModel>();
-                        lst = friendlist.friends;
-                        IEnumerable<ProfileModel> enumerableFriendProfiles = lst;
-
-                        return View(enumerableFriendProfiles);
+                        var dbUserList = _context.Profiles.Where(u => u.OwnerId == friendrequest.UserSender).ToList();
+                        foreach (ProfileModel dbProfile in dbUserList)
+                        {
+                            friendlist.setFriends(dbProfile);
+                        }
+                        
                     }
                     else if (friendrequest.Status && friendrequest.UserSender.Equals(user))
                     {
-                        var dbUser = _context.Profiles.Where(u => u.OwnerId == friendrequest.UserReceiver).First();
-                        friendlist.setFriends(dbUser);
-                        List<ProfileModel> lst = new List<ProfileModel>();
-                        lst = friendlist.friends;
-                        IEnumerable<ProfileModel> enumerableFriendProfiles = lst;
-
-                        return View(enumerableFriendProfiles);
+                        var dbUserList = _context.Profiles.Where(u => u.OwnerId == friendrequest.UserReceiver).ToList();
+                        foreach (ProfileModel dbProfile in dbUserList)
+                        {
+                            friendlist.setFriends(dbProfile);
+                        }
+                        
                     }
                 }
+                List<ProfileModel> lst = new List<ProfileModel>();
+                lst = friendlist.friends;
+                IEnumerable<ProfileModel> enumerableFriendProfiles = lst;
+
+                return View(enumerableFriendProfiles);
             }
             TempData["noFriend"] = ViewData["noFriends"] = true;
             TempData["noFriendRequest"] = ViewData["noFriendRequests"] = false;
