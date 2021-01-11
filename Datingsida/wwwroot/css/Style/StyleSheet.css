@@ -1,0 +1,30 @@
+﻿body {
+    background-color: #E2CFC4;
+}
+
+
+* {
+    font-family: 'Roboto', sans-serif;
+    font-style: normal;
+    font-weight: 400;
+}
+
+nav .navbar-nav li a {
+    color: black !important;
+    font-size: medium
+}
+
+.jumbotron {
+    background-color: white !important;
+}
+
+
+a:hover {
+    background-color: #E2CFC4;
+}
+
+.card {
+    border-radius: 8px;
+    padding: 1em;
+    margin: 1em 0 1em 0;
+}

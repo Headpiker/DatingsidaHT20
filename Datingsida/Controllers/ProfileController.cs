@@ -20,6 +20,7 @@ namespace Datingsida.Controllers
         private readonly IWebHostEnvironment _hostEnvironment;
         private readonly UserManager<IdentityUser> _userManager;
         private ProfileMessageViewModel myModel = new ProfileMessageViewModel();
+        private List<MessageModel> messageList = new List<MessageModel>();
 
         public ProfileController(DatingDbContext context, IWebHostEnvironment hostEnvironment, UserManager<IdentityUser> userManager)
         {
@@ -59,7 +60,7 @@ namespace Datingsida.Controllers
               
                 foreach (MessageModel message in myModel.messages)
                 {
-                    List<MessageModel> messageList = new List<MessageModel>();
+                    
                     if (currentUser.Id == message.ToId)
                     {
                         messageList.Add(message);
@@ -103,7 +104,6 @@ namespace Datingsida.Controllers
             }
             foreach (MessageModel message in myModel.messages)
             {
-                List<MessageModel> messageList = new List<MessageModel>();
                 if (recieverOwnerId == message.ToId)
                 {
                     messageList.Add(message);
