@@ -19,6 +19,27 @@ namespace Datingsida.Migrations.DatingDb
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("ProductVersion", "5.0.1");
 
+            modelBuilder.Entity("Datingsida.Models.FriendList", b =>
+                {
+                    b.Property<int>("FriendRequestID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .UseIdentityColumn();
+
+                    b.Property<bool>("Status")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("UserReceiver")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("UserSender")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("FriendRequestID");
+
+                    b.ToTable("FriendList");
+                });
+
             modelBuilder.Entity("Datingsida.Models.MessageModel", b =>
                 {
                     b.Property<int>("MessageId")
@@ -46,27 +67,6 @@ namespace Datingsida.Migrations.DatingDb
                     b.HasKey("MessageId");
 
                     b.ToTable("Messages");
-                });
-
-            modelBuilder.Entity("Datingsida.Models.FriendList", b =>
-                {
-                    b.Property<int>("FriendRequestID")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .UseIdentityColumn();
-
-                    b.Property<bool>("Status")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("UserReceiver")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("UserSender")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("FriendRequestID");
-
-                    b.ToTable("FriendList");
                 });
 
             modelBuilder.Entity("Datingsida.Models.ProfileModel", b =>
